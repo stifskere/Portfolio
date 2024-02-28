@@ -1,17 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
 
 * {
     margin: 0;
+
+    font-family: "Figtree", sans-serif;
+
+    user-select: none;
 }
 
-body, html {
+body, html, main {
     height: 100%;
+
+    scroll-behavior: smooth;
 }
 
 body {
     background: url("/background.png");
-    background-size: 150%;
 }
 
+/*title section*/
 .title {
+    color: white;
 
+    position: relative;
+
+    height: 100vh;
+}
+
+.title > div {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    text-align: center;
+}
+
+.title > div > * {
+    margin: 0;
+
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000;
+}
+
+.title > div > * > * {
+    transition: text-shadow 0.3s;
+}
+
+.title > div > * > *:hover {
+    text-shadow: 0 0 10px;
+}
+
+.title > div > h1 {
+    font-size: 12em;
+}
+
+.title > div > h2 {
+    font-size: 3em;
+}
+
+/*presentation section*/
+.presentation {
+    position: relative;
+
+    height: 60vh;
+}
+
+.presentation > div {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px
+}
+
+.presentation-description {
+    width: 700px;
+
+    color: white;
+
+    padding: 15px 15px;
+
+    font-weight: bold;
+}
+
+.presentation-socials {
+    display: flex;
+
+    gap: 15px;
+}
+
+.presentation-socials > * {
+    transition: box-shadow 0.2s;
+}
+
+.presentation-socials > *:hover {
+    box-shadow: 0 0 10px;
+}
+
+/*projects section*/
+.projects {
+    height: 100vh;
 }
