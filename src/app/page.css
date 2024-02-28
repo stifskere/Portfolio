@@ -1,0 +1,17 @@
+
+* {
+    margin: 0;
+}
+
+body, html {
+    height: 100%;
+}
+
+body {
+    background: url("/background.png");
+    background-size: 150%;
+}
+
+.title {
+
+}
