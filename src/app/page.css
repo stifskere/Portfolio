@@ -44,11 +44,11 @@ body {
     text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000;
 }
 
-.title > div > * > * {
+.title > div > * {
     transition: text-shadow 0.3s;
 }
 
-.title > div > * > *:hover {
+.title > div > *:hover {
     text-shadow: 0 0 10px;
 }
 
@@ -67,7 +67,7 @@ body {
     height: 60vh;
 }
 
-.presentation > div {
+.presentation-container {
     position: absolute;
 
     top: 50%;
@@ -79,15 +79,11 @@ body {
 
     flex-direction: column;
 
-    gap: 20px
-}
-
-.presentation-description {
-    width: 700px;
+    gap: 30px;
 
     color: white;
 
-    padding: 15px 15px;
+    padding: 30px 15px;
 
     font-weight: bold;
 }
@@ -98,15 +94,26 @@ body {
     gap: 15px;
 }
 
-.presentation-socials > * {
-    transition: box-shadow 0.2s;
-}
-
-.presentation-socials > *:hover {
-    box-shadow: 0 0 10px;
-}
-
 /*projects section*/
 .projects {
     height: 100vh;
+
+    position: relative;
+}
+
+.projects > div {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.repository-page-selector {
+    min-height: 50px;
 }

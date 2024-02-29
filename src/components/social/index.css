@@ -1,6 +1,6 @@
 
 .social {
-    height: 50px;
+    height: 40px;
     width: 100px;
 
     display: flex;
@@ -15,4 +15,40 @@
     padding: 0 5px;
 
     font-weight: bold;
+
+    transition: box-shadow 0.2s;
+
+    cursor: pointer;
+}
+
+.social:hover {
+    box-shadow: 0 0 15px;
+}
+
+.logo-in {
+    animation: logo-in 0.2s ease-in;
+}
+
+.arrow-in {
+    animation: arrow-in 0.2s ease-in-out, logo-in 0.2s backwards;
+}
+
+@keyframes logo-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 100%;
+    }
+}
+
+@keyframes arrow-in {
+    from {
+        transform: rotate(-90deg);
+    }
+
+    to {
+        transform: rotate(0);
+    }
 }

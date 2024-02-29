@@ -1,0 +1,73 @@
+
+.page-selector {
+    background-color: black;
+
+    color: white;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    border-radius: 8px;
+    border: 1px white solid;
+}
+
+.page-selector-index {
+    flex: 1;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    min-width: 55px;
+
+    cursor: pointer;
+}
+
+.page-selector-index > p {
+    position: relative;
+}
+
+.page-selector-index > p::after {
+    content: "";
+
+    position: absolute;
+
+    height: 1px;
+    width: 0;
+
+    top: 100%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    background-color: white;
+
+    transition: width 0.2s;
+}
+
+.page-selector-index:hover > p::after {
+    width: 10px;
+}
+
+.page-selector-index[data-selected="true"] {
+    background-color: white;
+    color: black;
+}
+
+.page-selector-index[data-selected="true"] > p::after {
+    background-color: black;
+}
+
+.page-selector-arrow {
+    transition: transform 0.2s;
+}
+
+.page-selector-arrow:first-child:hover {
+    transform: translateX(-5%);
+}
+
+.page-selector-arrow:last-child:hover {
+    transform: translateX(5%);
+}
