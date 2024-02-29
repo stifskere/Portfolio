@@ -1,0 +1,92 @@
+
+.repository {
+    height: 130px;
+
+    color: white;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    padding: 15px 15px;
+
+    transition: box-shadow 0.3s;
+
+    font-size: 1.1em;
+}
+
+.repository:hover {
+    box-shadow: 0 0 20px;
+}
+
+.repository > h1 {
+    position: relative;
+}
+
+.repository > h1::after {
+    content: "";
+
+    position: absolute;
+
+    top: 105%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    height: 1px;
+    width: 0;
+
+    background-color: white;
+
+    transition: width 0.3s;
+}
+
+.repository:hover > h1::after {
+    width: 100%;
+}
+
+.repository > div,
+.repository > div > div {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+}
+
+.repository > div {
+    width: 100%;
+}
+
+.repository-language {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 5px;
+}
+
+.language-circle {
+    height: 15px;
+    width: 15px;
+
+    background-color: white;
+
+    border-radius: 50%;
+}
+
+.repository-counters > div {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    height: 20px;
+
+    gap: 5px;
+}

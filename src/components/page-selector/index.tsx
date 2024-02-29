@@ -3,6 +3,7 @@ import {ReactElement, useEffect, useState} from "react";
 import {FaArrowLeft, FaArrowRight} from "react-icons/fa6";
 
 import "./index.css";
+import Box from "@/components/box";
 
 interface PageSelectorProps extends BaseProps<HTMLDivElement> {
 	pageSelected?: (page: number) => void;
@@ -50,12 +51,17 @@ export default function PageSelector({pageSelected, pages, className, ...props}:
 		return (): void => {
 			const result: number = current + diff;
 
-			if (result >= 1 && result <= pages)
-				setCurrent(result);
+			if (result < 1 || result > pages)
+				return;
+
+			if (pageSelected !== undefined)
+				pageSelected(result);
+
+			setCurrent(result);
 		};
 	}
 
-	return <div className={`${className} page-selector`} {...props}>
+	return <Box className={`${className} page-selector`} {...props}>
 		<div onClick={changeIndexBy(-1)} className="page-selector-arrow page-selector-index">
 			<FaArrowLeft/>
 		</div>
@@ -68,5 +74,5 @@ export default function PageSelector({pageSelected, pages, className, ...props}:
 		<div onClick={changeIndexBy(1)} className="page-selector-arrow page-selector-index">
 			<FaArrowRight/>
 		</div>
-	</div>;
+	</Box>;
 }

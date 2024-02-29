@@ -15,7 +15,7 @@ body, html, main {
 }
 
 body {
-    background: url("/background.png");
+    background: linear-gradient( rgba(0, 0, 0, 30%), rgba(0, 0, 0, 30%)), url("/background.png");
 }
 
 /*title section*/
@@ -112,6 +112,26 @@ body {
     display: flex;
 
     flex-direction: column;
+
+    gap: 40px;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.repositories {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 25px;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.repositories > div {
+    width: 50vw;
 }
 
 .repository-page-selector {

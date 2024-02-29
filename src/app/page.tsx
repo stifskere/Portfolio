@@ -1,16 +1,36 @@
 "use client";
 
-import {ReactElement} from "react";
+import {ReactElement, useEffect, useState} from "react";
+import {Choose, When, Otherwise} from "babel-plugin-jsx-control-statements/components";
 
 import {FaGithub, FaInstagram, FaLinkedin} from "react-icons/fa6";
+
+import {GithubRepository} from "@/app/github/github-types";
 
 import Social from "@/components/social";
 import Box from "@/components/box";
 import PageSelector from "@/components/page-selector";
+import Repository from "@/components/repository";
 
 import "./page.css";
 
 export default function Home(): ReactElement {
+	const [repos, setRepos]: StateTuple<GithubRepository[] | undefined | null> = useState();
+	const [page, setPage]: StateTuple<number> = useState(0);
+
+	useEffect((): void => {
+		fetch("/github")
+			.then(async (r: Response): Promise<void> => setRepos(
+				(await r.json()).sort((a: GithubRepository, b: GithubRepository): number =>
+					new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime()
+				)
+			));
+	}, []);
+
+	function setCurrentPage(page: number): void {
+		setPage(page - 1);
+	}
+
 	return <main>
 		<section className="title">
 			<div>
@@ -35,9 +55,22 @@ export default function Home(): ReactElement {
 			</Box>
 		</section>
 		<section className="projects">
-			<div>
-				<PageSelector className="repository-page-selector" pages={50} />
-			</div>
+			<Choose>
+				<When condition={repos !== undefined}>
+					<div>
+						<div className="repositories">
+							{repos!.slice(page * 3, Math.min((page + 1) * 3, repos!.length))
+								.map((repo: GithubRepository, index: number): ReactElement =>
+									<Repository repository={repo} key={index} />
+								)}
+						</div>
+						<PageSelector pageSelected={setCurrentPage} className="repository-page-selector" pages={Math.ceil(repos!.length / 3)}/>
+					</div>
+				</When>
+				<Otherwise>
+
+				</Otherwise>
+			</Choose>
 		</section>
 	</main>;
 }
