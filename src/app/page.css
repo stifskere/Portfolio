@@ -15,7 +15,9 @@ body, html, main {
 }
 
 body {
-    background: linear-gradient( rgba(0, 0, 0, 30%), rgba(0, 0, 0, 30%)), url("/background.png");
+    height: fit-content;
+
+    background: linear-gradient( rgba(0, 0, 0, 40%), rgba(0, 0, 0, 40%)), url("/background.png");
 }
 
 .spin {
@@ -103,6 +105,8 @@ body {
 }
 
 .presentation-container > p {
+    margin-right: 20px;
+
     font-size: 1.2em;
 }
 

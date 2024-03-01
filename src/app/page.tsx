@@ -3,6 +3,7 @@
 import {ReactElement, useEffect, useState} from "react";
 import {Choose, When, Otherwise} from "babel-plugin-jsx-control-statements/components";
 import Image from "next/image";
+import {formatDistanceToNow} from "date-fns";
 
 import {FaGithub, FaInstagram, FaLinkedin} from "react-icons/fa6";
 import {CgSpinner} from "react-icons/cg";
@@ -39,10 +40,11 @@ export default function Home(): ReactElement {
 	}
 
 	function setPresentationFace(smiling: boolean): (() => void) {
-		const element: HTMLHeadingElement
-			= document.querySelector(".presentation-container > h1 > span") as HTMLHeadingElement;
-
 		return (): void => {
+			const element: HTMLHeadingElement
+				= document.querySelector(".presentation-container > h1 > span") as HTMLHeadingElement;
+
+
 			element.innerText = smiling ? ":D" : ";)";
 		};
 	}
@@ -59,9 +61,13 @@ export default function Home(): ReactElement {
 				<>
 					<h1>Hello <span onMouseEnter={setPresentationFace(true)} onMouseLeave={setPresentationFace(false)}>;)</span></h1>
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur
-						doloribus eos, explicabo fugit ipsum quibusdam quidem sapiente sit? Aperiam
-						ipsa maiores non sint tenetur. Distinctio et explicabo nam praesentium voluptatem.
+						{`
+							I'm Esteve, an ${formatDistanceToNow(new Date("2005-11-06"))} year old developer on a mission to 
+							bring ideas to life and craft innovative solutions. Embarking on this journey 
+							${formatDistanceToNow(new Date("2021-12-26"))} ago, I've delved into realms of C#, C++, JavaScript, React, Vue, Laravel, 
+							and beyond. Eager to embrace fresh challenges and perpetually pursuing knowledge, I stand ready to 
+							collaborate and create wonders together. Let's build something extraordinary!
+						`}
 					</p>
 					<div className="presentation-socials">
 						<Social href="https://www.instagram.com/_memw1/" icon={<FaInstagram/>} name="Instagram"/>
