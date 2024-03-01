@@ -1,0 +1,46 @@
+
+.footer-list {
+    color: white;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+    font-size: 1.1em;
+
+    width: 200px;
+    min-width: max-content;
+}
+
+.footer-list > div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    padding-left: 10px;
+}
+
+.footer-link {
+    color: white;
+
+    text-decoration: none;
+
+    display: flex;
+
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.footer-link > svg {
+    margin-right: 10px;
+
+    transition: margin-right 0.2s;
+}
+
+.footer-link:hover > svg {
+    margin-right: 5px;
+}

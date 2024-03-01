@@ -18,6 +18,20 @@ body {
     background: linear-gradient( rgba(0, 0, 0, 30%), rgba(0, 0, 0, 30%)), url("/background.png");
 }
 
+.spin {
+    animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(365deg);
+    }
+}
+
 /*title section*/
 .title {
     color: white;
@@ -88,6 +102,10 @@ body {
     font-weight: bold;
 }
 
+.presentation-container > p {
+    font-size: 1.2em;
+}
+
 .presentation-socials {
     display: flex;
 
@@ -96,9 +114,36 @@ body {
 
 /*projects section*/
 .projects {
-    height: 100vh;
-
     position: relative;
+
+    height: 100vh;
+}
+
+.projects[data-loading="true"],
+.projects[data-did-error="true"] {
+    height: 70vh;
+}
+
+.projects[data-did-error="true"] .no-repositories-info {
+    box-shadow: 0 0 20px red;
+
+    border: 1px solid red;
+
+    animation: error-border linear infinite 2s;
+}
+
+@keyframes error-border {
+    0% {
+        box-shadow: 0 0 20px red;
+    }
+
+    50% {
+        box-shadow: 0 0 30px red;
+    }
+
+    100% {
+        box-shadow: 0 0 20px red;
+    }
 }
 
 .projects > div {
@@ -119,6 +164,35 @@ body {
     align-items: center;
 }
 
+.no-repositories-info {
+    width: 850px;
+    height: 175px;
+
+    color: white;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 15px;
+
+    text-align: center;
+
+    padding: 0 30px;
+}
+
+.no-repositories-info > h1,
+.no-repositories-info > svg {
+    font-size: 2.3em;
+}
+
+.no-repositories-info > p {
+    font-size: 1.3em;
+}
+
 .repositories {
     display: flex;
 
@@ -136,4 +210,54 @@ body {
 
 .repository-page-selector {
     min-height: 50px;
+}
+
+/*footer section*/
+footer {
+    height: 30vh;
+
+    position: relative;
+
+    background: linear-gradient(
+        to top,
+        black 0%,
+        black 50%,
+        rgba(0, 0, 0, 0.75) 80%,
+        rgba(0, 0, 0, 0.50) 90%,
+        transparent 100%
+    );
+
+    padding-bottom: 10vh;
+}
+
+.footer-content {
+    position: absolute;
+
+    width: 60%;
+
+    top: 65%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 50px;
+}
+
+.footer-content > img {
+    height: 230px;
+    width: 230px;
+}
+
+.footer-content > div {
+    display: flex;
+
+    gap: 50px;
+
+    align-items: flex-start;
+    justify-content: center;
 }

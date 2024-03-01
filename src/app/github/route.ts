@@ -31,17 +31,18 @@ export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 		const repositoryResponse: Response
 			= await fetch("https://api.github.com/users/stifskere/repos", githubRequestInit);
 
-		if (repositoryResponse.ok) {
-			repoCache.repos = await repositoryResponse.json() satisfies GithubRepositoryFromSource[];
+		if (!repositoryResponse.ok)
+			return new NextResponse(null, { status: 500 })
 
-			for (const repository of repoCache.repos!) {
-				const commitsResponse: Response
-					= await fetch(repository.commits_url.replace("{/sha}", ""), githubRequestInit);
+		repoCache.repos = await repositoryResponse.json() satisfies GithubRepositoryFromSource[];
 
-				repository.commit_count = commitsResponse.ok
-					? ((await commitsResponse.json()) as unknown[]).length
-					: 0;
-			}
+		for (const repository of repoCache.repos!) {
+			const commitsResponse: Response
+				= await fetch(repository.commits_url.replace("{/sha}", ""), githubRequestInit);
+
+			repository.commit_count = commitsResponse.ok
+				? ((await commitsResponse.json()) as unknown[]).length
+				: 0;
 		}
 	}
 
