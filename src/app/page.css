@@ -41,6 +41,10 @@ body {
     position: relative;
 
     height: 100vh;
+
+    @media (orientation: portrait) {
+        font-size: 0.5em;
+    }
 }
 
 .title > div {
@@ -81,6 +85,10 @@ body {
     position: relative;
 
     height: 60vh;
+
+    @media (orientation: portrait) {
+        height: 100vh;
+    }
 }
 
 .presentation-container {
@@ -102,18 +110,28 @@ body {
     padding: 30px 15px;
 
     font-weight: bold;
+
+    @media (orientation: portrait) {
+        width: 80vw;
+    }
 }
 
 .presentation-container > p {
     margin-right: 20px;
 
     font-size: 1.2em;
+
+    @media (orientation: portrait) {
+        font-size: 1em;
+    }
 }
 
 .presentation-socials {
     display: flex;
 
     gap: 15px;
+
+    flex-wrap: wrap;
 }
 
 /*projects section*/
@@ -210,6 +228,10 @@ body {
 
 .repositories > div {
     width: 50vw;
+
+    @media (orientation: portrait) {
+        width: 85vw;
+    }
 }
 
 .repository-page-selector {
@@ -219,6 +241,10 @@ body {
 /*footer section*/
 footer {
     height: 30vh;
+
+    @media (orientation: portrait) {
+        height: 130vh;
+    }
 
     position: relative;
 
@@ -246,6 +272,10 @@ footer {
 
     display: flex;
 
+    @media (orientation: portrait) {
+        flex-direction: column;
+    }
+
     align-items: center;
     justify-content: center;
 
@@ -255,10 +285,19 @@ footer {
 .footer-content > img {
     height: 230px;
     width: 230px;
+
+    @media (orientation: portrait) {
+        height: 150px;
+        width: 150px;
+    }
 }
 
 .footer-content > div {
     display: flex;
+
+    @media (orientation: portrait) {
+        flex-direction: column;
+    }
 
     gap: 50px;
 

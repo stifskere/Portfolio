@@ -15,11 +15,15 @@ interface FooterListProps extends Omit<BaseProps<HTMLDivElement>, "children">{
 }
 
 export default function FooterList({title, children, className, ...props}: FooterListProps): ReactElement {
-	return <div className={`footer-list ${className}`} {...props}>
+	return <div className={`footer-list ${className ?? ""}`} {...props}>
 		<h1>{title}</h1>
 		<div>
 			{children.map((link: Link, index: number): ReactElement =>
-				<a className="footer-link" href={link.href} key={index}>
+				<a className="footer-link"
+				   href={link.href}
+				   key={index}
+				   target="_blank"
+				>
 					<FaArrowRight />
 					{link.content}
 				</a>

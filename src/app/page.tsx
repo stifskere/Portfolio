@@ -131,7 +131,7 @@ export default function Home(): ReactElement {
 							},
 							{
 								content: "PDF version",
-								href: ""
+								href: "/resume.pdf"
 							}
 						]}
 					</FooterList>

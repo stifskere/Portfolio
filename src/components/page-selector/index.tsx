@@ -2,8 +2,9 @@ import {ReactElement, useEffect, useState} from "react";
 
 import {FaArrowLeft, FaArrowRight} from "react-icons/fa6";
 
-import "./index.css";
 import Box from "@/components/box";
+
+import "./index.css";
 
 interface PageSelectorProps extends BaseProps<HTMLDivElement> {
 	pageSelected?: (page: number) => void;
@@ -16,21 +17,25 @@ export default function PageSelector({pageSelected, pages, className, ...props}:
 	useEffect((): void => {
 		if (pages < 0)
 			throw new Error("pages can't be less than 0.");
-	})
+	});
 
 	function getArrayAt(index: number): number[] {
+		const showCount: number
+			= window.matchMedia("(orientation: portrait)").matches
+				? 3
+				: 5;
 		const result: number[] = [];
 		let start: number;
 
-		if (pages < 5 || index <= 3) {
+		if (pages < showCount || index <= showCount / 2) {
 			start = 1;
-		} else if (index >= pages - 2) {
-			start = pages - 5 + 1;
+		} else if (index >= pages - showCount / 2) {
+			start = pages - showCount + 1;
 		} else {
-			start = index - 2;
+			start = index - Math.floor(showCount / 2);
 		}
 
-		const end: number = Math.min(start + 5 - 1, pages);
+		const end: number = Math.min(start + showCount - 1, pages);
 
 		for (let i: number = start; i <= end; i++)
 			result.push(i);

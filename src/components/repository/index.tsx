@@ -20,7 +20,7 @@ export default function Repository({repository, className, ...props}: Repository
 		open(repository.html_url, "_blank");
 	}
 
-	return <Box onClick={goToRepository} className={`repository ${className}`} {...props}>
+	return <Box onClick={goToRepository} className={`repository ${className ?? ""}`} {...props}>
 		<h1>{repository.name}</h1>
 		<p>{repository.description}</p>
 		<div>
@@ -31,7 +31,9 @@ export default function Repository({repository, className, ...props}: Repository
 						<span>{repository.language}</span>
 					</div>
 				</If>
-				<span>Updated {formatDistanceToNow(new Date(repository.pushed_at))} ago</span>
+				<span className="repository-updated-at">
+					Updated {formatDistanceToNow(new Date(repository.pushed_at))} ago
+				</span>
 			</div>
 			<div className="repository-counters">
 				<div>

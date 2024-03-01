@@ -16,6 +16,10 @@
     transition: box-shadow 0.3s;
 
     font-size: 1.1em;
+
+    @media (orientation: portrait) {
+        font-size: 1em;
+    }
 }
 
 .repository:hover {
@@ -78,6 +82,11 @@
     background-color: white;
 
     border-radius: 50%;
+
+    @media (orientation: portrait) {
+        height: 10px;
+        width: 10px;
+    }
 }
 
 .repository-counters > div {
@@ -89,4 +98,11 @@
     height: 20px;
 
     gap: 5px;
+}
+
+.repository-updated-at,
+.repository-language {
+    @media (orientation: portrait) {
+        font-size: 0.8em;
+    }
 }
