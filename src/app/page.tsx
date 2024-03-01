@@ -113,7 +113,7 @@ export default function Home(): ReactElement {
 		</section>
 		<footer>
 			<div className="footer-content">
-				<Image src={logo} alt="logo"/>
+				<Image unoptimized src={logo} alt="logo"/>
 				<div>
 					<FooterList title="Find me">
 						{[
