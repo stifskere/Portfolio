@@ -3,7 +3,7 @@
 import {ReactElement, useEffect, useState} from "react";
 import {Choose, When, Otherwise} from "babel-plugin-jsx-control-statements/components";
 import Image from "next/image";
-import {formatDistanceToNow} from "date-fns";
+import {formatDistanceToNowStrict} from "date-fns";
 
 import {FaGithub, FaInstagram, FaLinkedin} from "react-icons/fa6";
 import {CgSpinner} from "react-icons/cg";
@@ -62,9 +62,9 @@ export default function Home(): ReactElement {
 					<h1>Hello <span onMouseEnter={setPresentationFace(true)} onMouseLeave={setPresentationFace(false)}>;)</span></h1>
 					<p>
 						{`
-							I'm Esteve, a ${formatDistanceToNow(new Date("2005-11-06"))} old developer on a mission to 
+							I'm Esteve, a ${formatDistanceToNowStrict(new Date("2005-11-06"))} old developer on a mission to 
 							bring ideas to life and craft innovative solutions. Embarking on this journey 
-							${formatDistanceToNow(new Date("2021-12-26"))} ago, I've delved into realms of C#, C++, JavaScript, React, Vue, Laravel, 
+							${formatDistanceToNowStrict(new Date("2021-12-26"))} ago, I've delved into realms of C#, C++, JavaScript, React, Vue, Laravel, 
 							and beyond. Eager to embrace fresh challenges and perpetually pursuing knowledge, I stand ready to 
 							collaborate and create wonders together. Let's build something extraordinary!
 						`}

@@ -52,8 +52,55 @@
     width: 100%;
 }
 
-.repository > div,
-.repository > div > div {
+.repository-name {
+    display: flex;
+
+    justify-content: space-between;
+
+    @media (orientation: portrait) {
+        flex-direction: column;
+
+        justify-content: flex-start;
+        align-items: flex-start;
+
+        gap: 5px;
+
+        font-size: 0.9em;
+    }
+}
+
+.repository-fork {
+    display: flex;
+
+    gap: 10px;
+
+    justify-content: center;
+    align-items: center;
+
+    @media (orientation: portrait) {
+        font-size: 0.9em;
+    }
+}
+
+.repository-fork > p > a {
+    color: #c4c4c4;
+
+    text-decoration: none;
+
+    transition: text-shadow 0.3s, color 0.3s;
+}
+
+.repository-fork > p > a:hover {
+    color: #ffffff;
+
+    text-shadow: 0 0 10px;
+
+    text-decoration: none;
+}
+
+
+.repository-data,
+.repository-data > div {
     display: flex;
 
     justify-content: space-between;

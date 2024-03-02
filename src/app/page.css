@@ -272,12 +272,12 @@ footer {
 
     display: flex;
 
+    align-items: center;
+    justify-content: center;
+
     @media (orientation: portrait) {
         flex-direction: column;
     }
-
-    align-items: center;
-    justify-content: center;
 
     gap: 50px;
 }
@@ -295,12 +295,16 @@ footer {
 .footer-content > div {
     display: flex;
 
-    @media (orientation: portrait) {
-        flex-direction: column;
-    }
-
     gap: 50px;
 
+    width: 70%;
+
     align-items: flex-start;
-    justify-content: center;
+    justify-content: space-between;
+
+    @media (orientation: portrait) {
+        flex-direction: column;
+
+        align-items: center;
+    }
 }

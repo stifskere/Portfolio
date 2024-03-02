@@ -12,6 +12,10 @@
 
     width: 200px;
     min-width: max-content;
+
+    @media (orientation: portrait) {
+        text-align: center;
+    }
 }
 
 .footer-list > div {
@@ -33,6 +37,14 @@
 
     justify-content: flex-start;
     align-items: center;
+
+    @media (orientation: portrait) {
+        justify-content: center;
+    }
+}
+
+.footer-link:hover {
+    text-shadow: 0 0 5px;
 }
 
 .footer-link > svg {
