@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 		title: "Memw developer's portfolio",
 		type: "website",
 		url: "https://memw.es",
-		images: "/background.png",
+		images: "/meta.png",
 		description: "Discover how can I help you in your projects!"
 	}
 };
