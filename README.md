@@ -42,6 +42,7 @@ These dependencies are included in the `package.json`
 		"sharp": "^0.33.2" // next.js image optimization
 	},
 	"devDependencies": {
+		"@babel/plugin-transform-class-static-block": "^7.23.4",
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
