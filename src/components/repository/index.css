@@ -26,11 +26,11 @@
     box-shadow: 0 0 20px;
 }
 
-.repository > h1 {
+.repository > .repository-name > h1 {
     position: relative;
 }
 
-.repository > h1::after {
+.repository > .repository-name > h1::after {
     content: "";
 
     position: absolute;
@@ -48,7 +48,7 @@
     transition: width 0.3s;
 }
 
-.repository:hover > h1::after {
+.repository:hover > .repository-name > h1::after {
     width: 100%;
 }
 
