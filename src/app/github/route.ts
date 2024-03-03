@@ -13,7 +13,7 @@ interface ExpiringRepoCache {
 const githubRequestInit: RequestInit = {
 	headers: {
 		Accept: "application/vnd.github+json",
-		Authorization: `Bearer ${process.env["GITHUB_API_TOKEN"]}`,
+		Authorization: `Bearer ${process.env["API_GITHUB_TOKEN"]}`,
 		"Cache-Control": "no-cache",
 		"If-Modified-Since": "Thu, 25 Oct 2012 15:16:27 GMT"
 	}
