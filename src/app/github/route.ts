@@ -3,7 +3,6 @@
 import {NextResponse} from "next/server";
 
 import {GithubRepository, GithubRepositoryFromSource} from "@/app/github/github-types";
-import {LiaObjectGroup} from "react-icons/lia";
 
 interface ExpiringRepoCache {
 	expiration: Date;

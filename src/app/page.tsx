@@ -143,7 +143,7 @@ export default function Home(): ReactElement {
 							},
 							{
 								content: "Project server",
-								href: "https://discord.gg/zW3hhTJn"
+								href: "https://discord.gg/vzgbCJBKHa"
 							}
 						]}
 					</FooterList>
