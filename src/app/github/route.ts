@@ -39,7 +39,7 @@ export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 
 		for (const repository of repoCache.repos!) {
 			const commitsResponse: Response
-				= await fetch(repository.commits_url.replace("{/sha}", "") + "?cache_bust=0", githubRequestInit);
+				= await fetch(repository.commits_url.replace("{/sha}", ""), githubRequestInit);
 
 			repository.commit_count = commitsResponse.ok
 				? ((await commitsResponse.json()) as unknown[]).length
@@ -49,7 +49,7 @@ export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 				continue;
 
 			const forkResponse: Response
-				= await fetch(repository.forks_url! + "?cache_bust=0", githubRequestInit)
+				= await fetch(repository.forks_url!, githubRequestInit)
 
 			if (forkResponse.ok) {
 				const forkArray: GithubRepositoryFromSource[]
