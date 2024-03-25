@@ -23,7 +23,7 @@ jobs:
 
       - name: Extract meta
         id: meta
-        uses: docker/metadata-action
+        uses: docker/metadata-action@latest
         with:
           images: mewapewa/projects
 
