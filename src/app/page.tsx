@@ -20,6 +20,7 @@ import logo from "../../public/logo.png";
 
 import "./page.css";
 
+
 export default function Home(): ReactElement {
 	const [repos, setRepos]: StateTuple<GithubRepository[] | undefined | null> = useState();
 	const [page, setPage]: StateTuple<number> = useState(0);

@@ -1,8 +1,8 @@
-"use server";
-
 import {NextResponse} from "next/server";
 
 import {GithubRepository, GithubRepositoryFromSource} from "@/app/github/github-types";
+
+export const revalidate = 3600;
 
 interface ExpiringRepoCache {
 	expiration: Date;
@@ -33,7 +33,7 @@ export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 			= await fetch("https://api.github.com/users/stifskere/repos?per_page=100&cache_bust=0", githubRequestInit);
 
 		if (!repositoryResponse.ok)
-			return new NextResponse(null, { status: 500 })
+			return new NextResponse(null, { status: 500 });
 
 		repoCache.repos = await repositoryResponse.json() satisfies GithubRepositoryFromSource[];
 
@@ -49,7 +49,7 @@ export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 				continue;
 
 			const forkResponse: Response
-				= await fetch(repository.forks_url!, githubRequestInit)
+				= await fetch(repository.forks_url!, githubRequestInit);
 
 			if (forkResponse.ok) {
 				const forkArray: GithubRepositoryFromSource[]
