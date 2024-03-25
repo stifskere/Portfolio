@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Login to Docker hub
-        uses: docker/login-action
+        uses: docker/login-action@latest
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -28,7 +28,7 @@ jobs:
           images: mewapewa/projects
 
       - name: Build and push
-        uses: docker/build-push-action
+        uses: docker/build-push-action@latest
         with:
           context: .
           file: ./Dockerfile
