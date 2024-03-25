@@ -25,7 +25,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: mewapewa/projects
+          images: mewapewa/projects:portfolio
 
       - name: Build and push
         uses: docker/build-push-action@v3
@@ -33,7 +33,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: portfolio
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
   pull-on-remote:
