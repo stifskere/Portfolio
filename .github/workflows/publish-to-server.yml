@@ -25,7 +25,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: mewapewa/projects:portfolio
+          images: mewapewa/projects
+          tags: portfolio
 
       - name: Build and push
         uses: docker/build-push-action@v3
