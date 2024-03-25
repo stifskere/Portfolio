@@ -40,6 +40,7 @@ jobs:
     name: Pull from server
     runs-on: ubuntu-latest
     environment: keys
+    needs: build-and-push
     steps:
       - name: call webhook
         uses: fjogeleit/http-request-action@v1
