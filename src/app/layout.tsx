@@ -3,14 +3,13 @@ import {ReactNode} from "react";
 
 export const metadata: Metadata = {
 	title: "Memw | Developer",
-	description: "Memw's portfolio.",
+	description: "Memw's Full Stack Developer Portfolio",
 	metadataBase: new URL("https://memw.es"),
 	openGraph: {
 		title: "Memw developer's portfolio",
 		type: "website",
-		url: "https://memw.es",
 		images: "/meta.png",
-		description: "Discover how can I help you in your projects!"
+		description: "Your vision, meticulously crafted into reality. That's my promise."
 	}
 };
 

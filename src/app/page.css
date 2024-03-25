@@ -6,6 +6,7 @@
     font-family: "Figtree", sans-serif;
 
     user-select: none;
+
 }
 
 body, html, main {
@@ -107,7 +108,7 @@ body {
 
     color: white;
 
-    padding: 30px 15px;
+    padding: 25px 25px;
 
     font-weight: bold;
 
