@@ -46,7 +46,7 @@ jobs:
       - name: call webhook
         uses: fjogeleit/http-request-action@v1
         with:
-          url: https://docker-puller.memw.es/?image=mewapewa/projects:portfolio
+          url: https://docker-puller.memw.es/?image=mewapewa%2Fprojects%3Aportfolio
           method: POST
           customHeaders: '{
             "Auth": "${{ secrets.PULLER_KEY }}", 
