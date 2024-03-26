@@ -1,5 +1,4 @@
 import {NextResponse} from "next/server";
-
 import {GithubRepository, GithubRepositoryFromSource} from "@/app/github/github-types";
 
 export const revalidate = 3600;
