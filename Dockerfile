@@ -11,7 +11,8 @@ RUN npm install
 
 COPY . /usr/src/app
 
-RUN echo "API_GITHUB_TOKEN=\"$(cat /run/secrets/API_GITHUB_TOKEN)\"" > /usr/src/app/.env
+RUN --mount=type=secret,id=API_GITHUB_TOKEN \
+    sed -i "s/API_GITHUB_TOKEN=/API_GITHUB_TOKEN=$(cat /run/secrets/API_GITHUB_TOKEN)/" .env
 
 RUN npm run build
 
