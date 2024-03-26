@@ -11,6 +11,7 @@ RUN npm install
 
 COPY . /usr/src/app
 
+RUN touch .env
 RUN --mount=type=secret,id=API_GITHUB_TOKEN \
     sed -i "s/API_GITHUB_TOKEN=/API_GITHUB_TOKEN=$(cat /run/secrets/API_GITHUB_TOKEN)/" .env
 
