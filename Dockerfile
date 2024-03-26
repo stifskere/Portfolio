@@ -1,7 +1,6 @@
 FROM node:alpine AS base
 
 RUN mkdir -p /usr/src/app
-ENV PORT 10001
 
 WORKDIR /usr/src/app
 
@@ -14,5 +13,5 @@ COPY . /usr/src/app
 
 RUN npm run build
 
-EXPOSE $PORT
-CMD ["npm", "run", "start:$PORT"]
+EXPOSE 10001
+CMD ["npm", "run", "start"]
