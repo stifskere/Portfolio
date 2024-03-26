@@ -48,4 +48,7 @@ jobs:
         with:
           url: https://docker-puller.memw.es/?image=mewapewa/projects:portfolio
           method: POST
-          customHeaders: '{"Auth": "${{ secrets.PULLER_KEY }}"}'
+          customHeaders: '{
+            "Auth": "${{ secrets.PULLER_KEY }}", 
+            "Secrets": "API_GITHUB_TOKEN=${{ secrets.API_GITHUB_TOKEN }}"
+          }'
