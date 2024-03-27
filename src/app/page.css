@@ -153,6 +153,10 @@ body {
     border: 1px solid red;
 
     animation: error-border linear infinite 2s;
+
+    @media (orientation: portrait) {
+        width: 80vw;
+    }
 }
 
 @keyframes error-border {

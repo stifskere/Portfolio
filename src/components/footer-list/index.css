@@ -41,7 +41,11 @@
     }
 }
 
-.footer-link:hover {
+.footer-link[data-disabled='true'] {
+    color: #676767;
+}
+
+.footer-link:not([data-disabled='true']):hover {
     text-shadow: 0 0 5px;
 }
 
@@ -51,6 +55,6 @@
     transition: margin-right 0.2s;
 }
 
-.footer-link:hover > svg {
+.footer-link:not([data-disabled='true']):hover > svg {
     margin-right: 5px;
 }
