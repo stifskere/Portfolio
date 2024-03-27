@@ -45,5 +45,5 @@ jobs:
     steps:
       - name: Pull from remote
         run: |
-          curl -X POST -H 'Auth: ${{ secrets.PULLER_KEY }}' \
-          https://docker-puller.memw.es/?image=mewapewa%2Fprojects%3Aportfolio&ports=10001%3A10001
+          curl -X POST -H 'Auth: ${{ secrets.PULLER_KEY }}' 
+          'https://docker-puller.memw.es/?image=mewapewa%2Fprojects%3Aportfolio&ports=10001%3A10001'
