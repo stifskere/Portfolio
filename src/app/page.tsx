@@ -143,8 +143,9 @@ export default function Home(): ReactElement {
 								href: "https://www.nuget.org/packages/MemwLib"
 							},
 							{
-								content: "Project server",
-								href: "https://discord.gg/vzgbCJBKHa"
+								content: "Coming soon...",
+								href: "https://discord.gg/vzgbCJBKHa",
+								disabled: true
 							}
 						]}
 					</FooterList>
