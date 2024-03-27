@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-push-and-pull:
-    name: Build, Push and Pull on remote
+  build-and-push:
+    name: Build and Push to Docker hub
     runs-on: ubuntu-latest
     environment: keys
     steps:
@@ -37,8 +37,13 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: "ApiGithubToken=${{ secrets.API_GITHUB_TOKEN }}"
 
+  pull-from-server:
+    name: Pull from remote
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment: keys
+    steps:
       - name: Pull from remote
-        if: success()
         run: |
           curl -X POST -H 'Auth: ${{ secrets.PULLER_KEY }}' \
           https://docker-puller.memw.es/?image=mewapewa%2Fprojects%3Aportfolio&ports=10001%3A10001
