@@ -5,10 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-
 jobs:
-  build-and-push:
-    name: Push to docker hub
+  build-push-and-pull:
+    name: Build, Push and Pull on remote
     runs-on: ubuntu-latest
     environment: keys
     steps:
@@ -28,7 +27,7 @@ jobs:
           images: mewapewa/projects
           tags: portfolio
 
-      - name: Build and push
+      - name: Build and Push
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -36,19 +35,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          secrets: "API_GITHUB_TOKEN=${{ secrets.API_GITHUB_TOKEN }}"
+          build-args: "API_GITHUB_TOKEN=${{ secrets.API_GITHUB_TOKEN }}"
 
-  pull-on-remote:
-    name: Pull from server
-    runs-on: ubuntu-latest
-    environment: keys
-    needs: build-and-push
-    steps:
-      - name: call webhook
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: https://docker-puller.memw.es/?image=mewapewa%2Fprojects%3Aportfolio&ports=10001%3A10001
-          method: POST
-          customHeaders: '{
-            "Auth": "${{ secrets.PULLER_KEY }}"
-          }'
+      - name: Pull from remote
+        if: success()
+        run: |
+          curl -X POST -H "Auth: ${{ secrets.PULLER_KEY }}" \
+          https://docker-puller.memw.es/?image=mewapewa%2Fprojects%3Aportfolio&ports=10001%3A10001
