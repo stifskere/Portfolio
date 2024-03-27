@@ -35,7 +35,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: "API_GITHUB_TOKEN=${{ secrets.API_GITHUB_TOKEN }}"
+          build-args: "ApiGithubToken=${{ secrets.API_GITHUB_TOKEN }}"
 
       - name: Pull from remote
         if: success()
