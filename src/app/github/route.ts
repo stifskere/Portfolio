@@ -48,14 +48,14 @@ export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 				continue;
 
 			const forkResponse: Response
-				= await fetch(repository.forks_url!, githubRequestInit);
+				= await fetch(repository.url!, githubRequestInit);
 
 			if (forkResponse.ok) {
-				const forkArray: GithubRepositoryFromSource[]
-					= (await forkResponse.json() satisfies GithubRepositoryFromSource[]);
+				const currentRespository: GithubRepositoryFromSource
+					= (await forkResponse.json() satisfies GithubRepositoryFromSource);
 
-				if (forkArray.length > 0)
-					repository.requested_forks = forkArray[0];
+				if (currentRespository.parent !== undefined)
+					repository.parent = currentRespository.parent;
 			}
 		}
 	}

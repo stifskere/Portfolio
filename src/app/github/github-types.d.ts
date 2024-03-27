@@ -8,10 +8,10 @@ export interface GithubRepositoryFromSource {
 	archived: boolean;
 	stargazers_count: number;
 	language?: string;
+	url: string;
 
 	fork: boolean;
-	forks_url?: string;
-	requested_forks?: GithubRepositoryFromSource
+	parent?: GithubRepositoryFromSource;
 
 	commits_url: string;
 	commit_count: number;
@@ -22,8 +22,6 @@ export type GithubRepository = Omit<
 	GithubRepositoryFromSource,
 	"commits_url" |
 	"forks_url" |
-	"requested_forks" |
+	"fork_repo" |
 	"fork"
-> & {
-	requested_forks?: GithubRepository
-};
+>;

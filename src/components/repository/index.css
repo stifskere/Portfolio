@@ -17,6 +17,8 @@
 
     font-size: 1.1em;
 
+    cursor: pointer;
+
     @media (orientation: portrait) {
         font-size: 1em;
     }
