@@ -19,6 +19,10 @@
 
     cursor: pointer;
 
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
     @media (orientation: portrait) {
         font-size: 1em;
     }
@@ -71,6 +75,10 @@
     }
 }
 
+.repository-name > h1 {
+    margin-right: 30px;
+}
+
 .repository-fork {
     display: flex;
 
@@ -78,6 +86,10 @@
 
     justify-content: center;
     align-items: center;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 
     @media (orientation: portrait) {
         font-size: 0.9em;
@@ -100,6 +112,9 @@
     text-decoration: none;
 }
 
+.repository > p {
+    margin-right: 50px;
+}
 
 .repository-data,
 .repository-data > div {
