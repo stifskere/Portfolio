@@ -45,7 +45,6 @@ export default function Home(): ReactElement {
 			const element: HTMLHeadingElement
 				= document.querySelector(".presentation-container > h1 > span") as HTMLHeadingElement;
 
-
 			element.innerText = smiling ? ":D" : ";)";
 		};
 	}

@@ -3,11 +3,6 @@ import {GithubRepository, GithubRepositoryFromSource} from "@/app/github/github-
 
 export const revalidate = 3600;
 
-interface ExpiringRepoCache {
-	expiration: Date;
-	repos?: GithubRepositoryFromSource[];
-}
-
 const githubRequestInit: RequestInit = {
 	headers: {
 		Accept: "application/vnd.github+json",
@@ -16,49 +11,37 @@ const githubRequestInit: RequestInit = {
 	}
 }
 
-const repoCache: ExpiringRepoCache = {
-	expiration: new Date()
-};
-
 export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
-	const currentDate: Date = new Date();
+	const repositoryResponse: Response
+		= await fetch("https://api.github.com/users/stifskere/repos?per_page=100&cache_bust=0", githubRequestInit);
 
-	if (repoCache.expiration.getTime() < currentDate.getTime()
-		|| repoCache.repos === undefined) {
+	if (!repositoryResponse.ok)
+		return new NextResponse(null, { status: 500 });
 
-		// I've got to change this some time.
-		repoCache.expiration = new Date(currentDate.getTime() * 10800000);
-		const repositoryResponse: Response
-			= await fetch("https://api.github.com/users/stifskere/repos?per_page=100&cache_bust=0", githubRequestInit);
+	const repos: GithubRepositoryFromSource[] = await repositoryResponse.json();
 
-		if (!repositoryResponse.ok)
-			return new NextResponse(null, { status: 500 });
+	for (const repository of repos) {
+		const commitsResponse: Response
+			= await fetch(repository.commits_url.replace("{/sha}", ""), githubRequestInit);
 
-		repoCache.repos = await repositoryResponse.json() satisfies GithubRepositoryFromSource[];
+		repository.commit_count = commitsResponse.ok
+			? ((await commitsResponse.json()) as unknown[]).length
+			: 0;
 
-		for (const repository of repoCache.repos!) {
-			const commitsResponse: Response
-				= await fetch(repository.commits_url.replace("{/sha}", ""), githubRequestInit);
+		if (!repository.fork)
+			continue;
 
-			repository.commit_count = commitsResponse.ok
-				? ((await commitsResponse.json()) as unknown[]).length
-				: 0;
+		const forkResponse: Response
+			= await fetch(repository.url!, githubRequestInit);
 
-			if (!repository.fork)
-				continue;
+		if (forkResponse.ok) {
+			const currentRespository: GithubRepositoryFromSource
+				= (await forkResponse.json() satisfies GithubRepositoryFromSource);
 
-			const forkResponse: Response
-				= await fetch(repository.url!, githubRequestInit);
-
-			if (forkResponse.ok) {
-				const currentRespository: GithubRepositoryFromSource
-					= (await forkResponse.json() satisfies GithubRepositoryFromSource);
-
-				if (currentRespository.parent !== undefined)
-					repository.parent = currentRespository.parent;
-			}
+			if (currentRespository.parent !== undefined)
+				repository.parent = currentRespository.parent;
 		}
 	}
 
-	return NextResponse.json(<GithubRepository[] | null>(repoCache.repos ?? null));
+	return NextResponse.json(<GithubRepository[] | null>(repos ?? null));
 }

@@ -87,6 +87,8 @@ body {
 
     height: 60vh;
 
+    margin: 10vh 0;
+
     @media (orientation: portrait) {
         height: 100vh;
     }
@@ -108,9 +110,16 @@ body {
 
     color: white;
 
-    padding: 25px 25px;
+    padding: 23px 23px;
 
     font-weight: bold;
+
+    width: calc(50vw - 23px);
+    max-width: 1000px;
+
+    @media (orientation: landscape) {
+        min-width: 650px;
+    }
 
     @media (orientation: portrait) {
         width: 80vw;
@@ -233,6 +242,11 @@ body {
 
 .repositories > div {
     width: 50vw;
+    max-width: 1000px;
+
+    @media (orientation: landscape) {
+        min-width: 650px;
+    }
 
     @media (orientation: portrait) {
         width: 85vw;
@@ -245,7 +259,7 @@ body {
 
 /*footer section*/
 footer {
-    height: 30vh;
+    height: 40vh;
 
     @media (orientation: portrait) {
         height: 130vh;
@@ -262,13 +276,14 @@ footer {
         transparent 100%
     );
 
-    padding-bottom: 10vh;
+
 }
 
 .footer-content {
     position: absolute;
 
-    width: 60%;
+    width: 100%;
+    max-width: 1000px;
 
     top: 65%;
     left: 50%;
@@ -288,8 +303,11 @@ footer {
 }
 
 .footer-content > img {
-    height: 230px;
-    width: 230px;
+    height: 20vw;
+    width: 20vw;
+
+    max-width: 230px;
+    max-height: 230px;
 
     @media (orientation: portrait) {
         height: 150px;
