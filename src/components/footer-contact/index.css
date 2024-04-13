@@ -1,0 +1,92 @@
+
+.footer-contact {
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+
+    font-size: 1.1em;
+}
+
+@media (orientation: portrait) {
+    .footer-contact > h1 {
+        align-self: center;
+    }
+}
+
+.contact-input {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 1.2em;
+
+    position: relative;
+}
+
+.contact-input > svg {
+    position: absolute;
+
+    left: 90%;
+
+    /*cursor: pointer;*/
+
+    color: #606060;
+
+    transition: color 0.2s;
+}
+
+/*.contact-input > svg:hover {*/
+/*    color: white;*/
+/*}*/
+
+.contact-input > input {
+    background-color: black;
+
+    border: #606060 solid;
+    border-width: 0 0 1px 0;
+
+    height: 30px;
+
+    color: white;
+
+    outline: none;
+
+    padding-left: 10px;
+
+    transition: border-color 0.2s;
+
+    width: 250px;
+}
+
+/*.contact-input > input:focus,*/
+/*.contact-input > input:hover {*/
+/*    border-color: white;*/
+/*}*/
+
+.contact-alternative {
+    color: #676767;
+
+    font-size: 0.7em;
+}
+
+.contact-alternative > p > a {
+    transition: color 0.2s, text-shadow 0.2s;
+
+    color: #676767;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+.contact-alternative > p > a:hover {
+    color: white;
+
+    text-shadow: 0 0 5px;
+}
