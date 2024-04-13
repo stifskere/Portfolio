@@ -259,10 +259,10 @@ body {
 
 /*footer section*/
 footer {
-    height: 40vh;
+    height: 400px;
 
     @media (orientation: portrait) {
-        height: 130vh;
+        height: 1200px;
     }
 
     position: relative;
@@ -275,8 +275,6 @@ footer {
         rgba(0, 0, 0, 0.50) 90%,
         transparent 100%
     );
-
-
 }
 
 .footer-content {
@@ -303,15 +301,21 @@ footer {
 }
 
 .footer-content > img {
-    height: 20vw;
-    width: 20vw;
+    height: 10vw;
+    width: 10vw;
 
-    max-width: 230px;
-    max-height: 230px;
+    max-width: 192px;
+    max-height: 192px;
 
     @media (orientation: portrait) {
         height: 150px;
         width: 150px;
+    }
+
+    @media (max-width: 1070px) {
+        @media (orientation: landscape) {
+            display: none;
+        }
     }
 }
 

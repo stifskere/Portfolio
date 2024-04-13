@@ -19,9 +19,11 @@
 
     cursor: pointer;
 
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    @media (orientation: landscape) {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 
     @media (orientation: portrait) {
         font-size: 1em;
@@ -114,6 +116,8 @@
 
 .repository > p {
     margin-right: 50px;
+
+    text-wrap: initial;
 }
 
 .repository-data,

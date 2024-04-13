@@ -15,6 +15,7 @@ import Box from "@/components/box";
 import PageSelector from "@/components/page-selector";
 import Repository from "@/components/repository";
 import FooterList from "@/components/footer-list";
+import FooterContact from "@/components/footer-contact";
 
 import logo from "../../public/logo.png";
 
@@ -115,14 +116,7 @@ export default function Home(): ReactElement {
 			<div className="footer-content">
 				<Image unoptimized src={logo} alt="logo"/>
 				<div>
-					<FooterList title="Find me">
-						{[
-							{
-								content: "Email me",
-								href: "mailto:contact@memw.es"
-							}
-						]}
-					</FooterList>
+					<FooterContact />
 					<FooterList title="About this">
 						{[
 							{
