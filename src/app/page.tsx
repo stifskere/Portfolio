@@ -8,7 +8,7 @@ import {formatDistanceToNowStrict} from "date-fns";
 import {FaGithub, FaInstagram, FaLinkedin} from "react-icons/fa6";
 import {CgSpinner} from "react-icons/cg";
 
-import {GithubRepository} from "@/app/github/github-types";
+import {GithubCompiledGist, GithubRepository} from "@/app/github/github-types";
 
 import Social from "@/components/social";
 import Box from "@/components/box";
@@ -20,19 +20,29 @@ import FooterContact from "@/components/footer-contact";
 import logo from "../../public/logo.png";
 
 import "./page.css";
+import Gist from "@/components/gist";
+import Loader from "@/components/content-loader";
 
 
 export default function Home(): ReactElement {
 	const [repos, setRepos]: StateTuple<GithubRepository[] | undefined | null> = useState();
 	const [page, setPage]: StateTuple<number> = useState(0);
+	const [gists, setGists]: StateTuple<GithubCompiledGist[] | undefined | null> = useState();
 
 	useEffect((): void => {
-		fetch("/github")
+		fetch("/github/repos")
 			.then(async (r: Response): Promise<void> => setRepos(
 				r.ok
 					? (await r.json()).sort((a: GithubRepository, b: GithubRepository): number =>
 						new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime()
 					)
+					: null
+			));
+
+		fetch("/github/gists")
+			.then(async (r: Response): Promise<void> => setGists(
+				r.ok
+					? (await r.json())
 					: null
 			));
 	}, []);
@@ -78,27 +88,12 @@ export default function Home(): ReactElement {
 				</>
 			</Box>
 		</section>
-		<section className="projects" data-did-error={repos === null} data-loading={repos === undefined}>
+		<section className="projects">
 			<div>
-				<Choose>
-					<When condition={repos === null}>
-						<Box className="no-repositories-info">
-							<h1>Whoops!</h1>
-							<p>
-								Looks like there was an error while loading the repositories,
-								try reloading or wait for this bug to be fixed.
-							</p>
-						</Box>
-					</When>
-					<When condition={repos === undefined}>
-						<Box className="no-repositories-info">
-							<CgSpinner className="spin" />
-							<p>Loading, please wait...</p>
-						</Box>
-					</When>
-					<Otherwise>
+				<Loader error={repos === null} waiting={repos === undefined} what="github repositories">
+					<>
 						<div className="repositories">
-							{repos!.slice(page * 3, Math.min((page + 1) * 3, repos!.length))
+							{repos?.slice(page * 3, Math.min((page + 1) * 3, repos!.length))
 								.map((repo: GithubRepository, index: number): ReactElement =>
 									<Repository repository={repo} key={index}/>
 								)}
@@ -106,11 +101,21 @@ export default function Home(): ReactElement {
 						<PageSelector
 							pageSelected={setCurrentPage}
 							className="repository-page-selector"
-							pages={Math.ceil(repos!.length / 3)}
+							pages={Math.ceil(repos?.length ?? 0 / 3)}
 						/>
-					</Otherwise>
-				</Choose>
+					</>
+				</Loader>
 			</div>
+		</section>
+		<section className="gists">
+			<Loader error={gists === null} waiting={gists === undefined} what="github gists">
+				<>
+					{gists
+						?.toSorted((gistA: GithubCompiledGist, gistB: GithubCompiledGist) => gistA.order - gistB.order)
+						.map((gist: GithubCompiledGist, index: number) => <Gist key={index} gist={gist}/>)
+					}
+				</>
+			</Loader>
 		</section>
 		<footer>
 			<div className="footer-content">

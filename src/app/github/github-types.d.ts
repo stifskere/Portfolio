@@ -17,7 +17,6 @@ export interface GithubRepositoryFromSource {
 	commit_count: number;
 }
 
-
 export type GithubRepository = Omit<
 	GithubRepositoryFromSource,
 	"commits_url" |
@@ -25,3 +24,25 @@ export type GithubRepository = Omit<
 	"fork_repo" |
 	"fork"
 >;
+
+export interface GithubGist {
+	html_url: string;
+	files: { [key: string]: GithubGistFile }
+	public: boolean
+	description?: string;
+}
+
+interface GithubGistFile {
+	filename: string;
+	language: string;
+	raw_url: string;
+}
+
+export interface GithubCompiledGist {
+	filename: string;
+	language: string;
+	cut_string: string;
+	public_url: string;
+	description?: string;
+	order: number;
+}
