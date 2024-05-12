@@ -1,0 +1,85 @@
+
+.gist {
+    width: 51.5vw;
+    max-width: 1000px;
+
+    @media (orientation: landscape) {
+        min-width: 650px;
+    }
+
+    @media (orientation: portrait) {
+        width: 85vw;
+    }
+
+    border-radius: 8px;
+    border: 1px solid white;
+
+    overflow: hidden;
+
+    transition: box-shadow 0.2s;
+
+    cursor: pointer;
+
+    padding: 0 0 15px 0;
+
+    background-color: rgb(28, 27, 27);
+}
+
+.gist:hover {
+    box-shadow: 0 0 20px #ffffff;
+}
+
+.gist-header {
+    background-color: black;
+
+    color: white;
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    height: 40px;
+
+    padding: 0 20px;
+
+    font-weight: bold;
+}
+
+.gist-header > div {
+    display: flex;
+
+    gap: 8px;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.gist-desc {
+    color: #8a8a8a;
+
+    font-size: 0.8em;
+
+    justify-self: center;
+    align-self: flex-end;
+}
+
+.gist-content {
+    transition: filter 0.5s;
+}
+
+.gist-content {
+    padding: 0 0 10px 0;
+
+    max-height: 150px;
+
+    transition: max-height 0.8s ease-in-out;
+
+    overflow: hidden;
+}
+
+.gist:hover > .gist-content {
+    max-height: 600px;
+}

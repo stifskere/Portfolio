@@ -5,3 +5,23 @@
     border: white 1px solid;
     border-radius: 8px;
 }
+
+.error-box {
+    border: red 1px solid;
+
+    animation: error-border infinite 2s;
+}
+
+@keyframes error-border {
+    0% {
+        box-shadow: 0 0 20px red;
+    }
+
+    50% {
+        box-shadow: 0 0 30px red;
+    }
+
+    100% {
+        box-shadow: 0 0 20px red;
+    }
+}

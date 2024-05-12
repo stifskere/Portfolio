@@ -1,15 +1,8 @@
 import {NextResponse} from "next/server";
 import {GithubRepository, GithubRepositoryFromSource} from "@/app/github/github-types";
+import {githubRequestInit} from "@/app/github/github-constants";
 
 export const revalidate = 3600;
-
-const githubRequestInit: RequestInit = {
-	headers: {
-		Accept: "application/vnd.github+json",
-		Authorization: `Bearer ${process.env["API_GITHUB_TOKEN"]}`,
-		"Cache-Control": "no-cache"
-	}
-}
 
 export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 	const repositoryResponse: Response
@@ -21,11 +14,11 @@ export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 	const repos: GithubRepositoryFromSource[] = await repositoryResponse.json();
 
 	for (const repository of repos) {
-		const commitsResponse: Response
+		const repoCommitsResponse: Response
 			= await fetch(repository.commits_url.replace("{/sha}", ""), githubRequestInit);
 
-		repository.commit_count = commitsResponse.ok
-			? ((await commitsResponse.json()) as unknown[]).length
+		repository.commit_count = repoCommitsResponse.ok
+			? ((await repoCommitsResponse.json()) as unknown[]).length
 			: 0;
 
 		if (!repository.fork)
@@ -36,7 +29,7 @@ export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 
 		if (forkResponse.ok) {
 			const currentRespository: GithubRepositoryFromSource
-				= (await forkResponse.json() satisfies GithubRepositoryFromSource);
+				= await forkResponse.json() satisfies GithubRepositoryFromSource;
 
 			if (currentRespository.parent !== undefined)
 				repository.parent = currentRespository.parent;
