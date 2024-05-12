@@ -17,13 +17,21 @@
     text-align: center;
 
     padding: 0 30px;
+
+    @media (orientation: portrait) {
+        width: 75vw;
+    }
 }
 
 .no-content-info > h1,
 .no-content-info > svg {
     font-size: 2.3em;
+
+    @media (orientation: portrait) {
+        font-size: 1.9em;
+    }
 }
 
 .no-content-info > p {
-    font-size: 1.3em;
+    font-size: 0.9em;
 }

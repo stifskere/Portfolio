@@ -42,8 +42,34 @@
     height: 40px;
 
     padding: 0 20px;
+}
 
+.gist-header > div:first-child {
     font-weight: bold;
+
+    overflow: hidden;
+    text-wrap: nowrap;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.gist-header > div:first-child > *:first-child {
+    @media (orientation: portrait) {
+        font-size: 0.85em;
+    }
+}
+
+.gist-header > div:last-child {
+    background-color: black;
+
+    padding: 0 0 0 10px;
+
+    @media (orientation: portrait) {
+        font-size: 0.8em;
+    }
 }
 
 .gist-header > div {
@@ -67,16 +93,16 @@
 }
 
 .gist-content {
-    transition: filter 0.5s;
-}
-
-.gist-content {
     padding: 0 0 10px 0;
 
     max-height: 150px;
 
     transition: max-height 0.8s ease-in-out;
 
+    overflow: hidden;
+}
+
+.gist-content > pre {
     overflow: hidden;
 }
 
