@@ -34,6 +34,17 @@
     display: flex;
 
     gap: 5px;
+
+    @media (orientation: portrait) {
+        font-size: 0.8em;
+    }
+}
+
+@media (orientation: portrait) {
+    .github-rating-stats > div:last-child > p {
+        font-size: 0.8em;
+    }
+
 }
 
 .github-mark {
@@ -72,6 +83,10 @@
     font-size: 1.8em;
 
     position: relative;
+
+    @media (orientation: portrait) {
+        font-size: 1.4em;
+    }
 }
 
 .github-status > h2::before {
