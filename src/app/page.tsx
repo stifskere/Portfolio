@@ -25,6 +25,23 @@ export default function Home(): ReactElement {
 	const [repos, setRepos]: StateTuple<GithubRepository[] | undefined | null> = useState();
 	const [page, setPage]: StateTuple<number> = useState(0);
 	const [gists, setGists]: StateTuple<GithubCompiledGist[] | undefined | null> = useState();
+	const [phrase, setPhrase]: StateTuple<ReactElement | undefined> = useState();
+
+	const waitingPhrases: ReactElement[] = [
+		<>... It&apos;s not the time <b>YET</b></>,
+		<>... It hasn&apos;t arrived <b>YET</b></>,
+		<>... It&apos;s not here</>,
+		<>... The moment is not <b>NOW</b></>,
+		<>... The answer is not <b>HERE</b></>,
+		<>... We&apos;re still <b>WAITING</b></>,
+		<>... The time hasn&apos;t come</>,
+		<>... It&apos;s still being <b>AWAITED</b></>,
+		<>... The reveal is <b>PENDING</b></>,
+		<>... We are <b>ANTICIPATING</b></>,
+		<>... It remains <b>UNSEEN</b></>,
+		<>... The moment is <b>COMING</b></>,
+		<>... The wait is not <b>OVER</b></>
+	];
 
 	useEffect((): void => {
 		fetch("/github/repos")
@@ -42,6 +59,8 @@ export default function Home(): ReactElement {
 					? (await r.json())
 					: null
 			));
+
+		setPhrase(waitingPhrases[Math.floor(Math.random() * waitingPhrases.length)]);
 	}, []);
 
 	function setCurrentPage(page: number): void {
@@ -56,22 +75,6 @@ export default function Home(): ReactElement {
 			element.innerText = smiling ? "  :D" : "  ;)";
 		};
 	}
-
-	const waitingPhrases: ReactElement[] = [
-		<><p key={0}>... It&apos;s not the time <b>YET</b></p></>,
-		<><p key={1}>... It hasn&apos;t arrived <b>YET</b></p></>,
-		<><p key={2}>... It&apos;s not here</p></>,
-		<><p key={3}>... The moment is not <b>NOW</b></p></>,
-		<><p key={4}>... The answer is not <b>HERE</b></p></>,
-		<><p key={5}>... We&apos;re still <b>WAITING</b></p></>,
-		<><p key={6}>... The time hasn&apos;t come</p></>,
-		<><p key={7}>... It&apos;s still being <b>AWAITED</b></p></>,
-		<><p key={8}>... The reveal is <b>PENDING</b></p></>,
-		<><p key={9}>... We are <b>ANTICIPATING</b></p></>,
-		<><p key={10}>... It remains <b>UNSEEN</b></p></>,
-		<><p key={11}>... The moment is <b>COMING</b></p></>,
-		<><p key={12}>... The wait is not <b>OVER</b></p></>
-	];
 
 	return <main>
 		<section className="title">
@@ -104,7 +107,7 @@ export default function Home(): ReactElement {
 						<div className="presentation-experience">
 							<p>Take a look at</p>
 							<p>... Forget it ...</p>
-							<>{waitingPhrases[Math.floor(Math.random() * waitingPhrases.length)]}</>
+							<p>{phrase ?? "..."}</p>
 						</div>
 						<div className="presentation-contact">
 							<p>Get in touch:</p>

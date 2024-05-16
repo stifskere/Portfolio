@@ -11,7 +11,6 @@ import Box from "@/components/box";
 import ProgressBar from "../progress-bar";
 
 import "./index.css";
-import {ReactFontSizeByTextLength} from "react-font-size-by-text-length";
 
 console.log(`
 That pretty Spotify component you see does API polling, since
@@ -26,6 +25,8 @@ https://community.spotify.com/t5/Spotify-for-Developers/Access-to-websockets/td-
 
 This uses prediction to avoid making a request every second, it syncs actions
 within a max window of 5 seconds.
+
+source: https://github.com/stifskere/Portfolio/blob/main/src/components/spotify-status/index.tsx
 
 `);
 
