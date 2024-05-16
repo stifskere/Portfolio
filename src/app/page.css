@@ -35,6 +35,26 @@ body {
     }
 }
 
+
+.box-loading {
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.3em;
+
+    gap: 15px;
+}
+
+.box-loading > svg {
+    font-size: 35px;
+}
+
+
 /*title section*/
 .title {
     color: white;
@@ -94,7 +114,7 @@ body {
     }
 }
 
-.presentation-container {
+.presentation > div {
     position: absolute;
 
     top: 50%;
@@ -102,6 +122,14 @@ body {
 
     transform: translate(-50%, -50%);
 
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.presentation-container {
     display: flex;
 
     flex-direction: column;
@@ -144,7 +172,28 @@ body {
     flex-wrap: wrap;
 }
 
-/*projects section*/
+.presentation-boxes {
+    display: flex;
+
+    width: 100%;
+
+    gap: 20px;
+
+    @media (orientation: portrait) {
+        flex-direction: column;
+    }
+}
+
+.presentation-boxes > * {
+    width: 50%;
+    height: 20vh;
+
+    @media (orientation: portrait) {
+        width: 100%;
+    }
+}
+
+    /*projects section*/
 .projects {
     position: relative;
 

@@ -5,8 +5,6 @@ import {If} from "babel-plugin-jsx-control-statements/components";
 import {IoStar} from "react-icons/io5";
 import {FaCodeCommit, FaCodeFork} from "react-icons/fa6";
 
-import {GithubRepository} from "@/app/github/github-types";
-
 import Box from "@/components/box";
 
 import "./index.css";

@@ -1,0 +1,18 @@
+
+.progress-bar {
+    min-height: 5px;
+
+    border-radius: 3px;
+
+    background-color: #606060;
+
+    overflow: hidden;
+}
+
+.progress-bar > div {
+    height: 100%;
+
+    min-height: 5px;
+
+    background-color: white;
+}
