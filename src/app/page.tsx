@@ -4,7 +4,7 @@ import {ReactElement, useEffect, useState} from "react";
 import Image from "next/image";
 import {formatDistanceToNowStrict} from "date-fns";
 
-import {FaInstagram, FaLinkedin} from "react-icons/fa6";
+import {FaDiscord, FaInstagram, FaLinkedin} from "react-icons/fa6";
 
 import Social from "@/components/social";
 import Box from "@/components/box";
@@ -15,11 +15,11 @@ import FooterContact from "@/components/footer-contact";
 import Gist from "@/components/gist";
 import Loader from "@/components/content-loader";
 import SpotifyStatus from "@/components/spotify-status";
+import GithubRating from "@/components/github-rating";
 
 import logo from "../../public/logo.png";
 
 import "./page.css";
-import GithubRating from "@/components/github-rating";
 
 export default function Home(): ReactElement {
 	const [repos, setRepos]: StateTuple<GithubRepository[] | undefined | null> = useState();
@@ -51,11 +51,27 @@ export default function Home(): ReactElement {
 	function setPresentationFace(smiling: boolean): (() => void) {
 		return (): void => {
 			const element: HTMLHeadingElement
-				= document.querySelector(".presentation-container > h1 > span") as HTMLHeadingElement;
+				= document.querySelector(".presentation-container-text > h1 > span") as HTMLHeadingElement;
 
-			element.innerText = smiling ? ":D" : ";)";
+			element.innerText = smiling ? "  :D" : "  ;)";
 		};
 	}
+
+	const waitingPhrases: ReactElement[] = [
+		<><p key={0}>... It&apos;s not the time <b>YET</b></p></>,
+		<><p key={1}>... It hasn&apos;t arrived <b>YET</b></p></>,
+		<><p key={2}>... It&apos;s not here</p></>,
+		<><p key={3}>... The moment is not <b>NOW</b></p></>,
+		<><p key={4}>... The answer is not <b>HERE</b></p></>,
+		<><p key={5}>... We&apos;re still <b>WAITING</b></p></>,
+		<><p key={6}>... The time hasn&apos;t come</p></>,
+		<><p key={7}>... It&apos;s still being <b>AWAITED</b></p></>,
+		<><p key={8}>... The reveal is <b>PENDING</b></p></>,
+		<><p key={9}>... We are <b>ANTICIPATING</b></p></>,
+		<><p key={10}>... It remains <b>UNSEEN</b></p></>,
+		<><p key={11}>... The moment is <b>COMING</b></p></>,
+		<><p key={12}>... The wait is not <b>OVER</b></p></>
+	];
 
 	return <main>
 		<section className="title">
@@ -67,26 +83,54 @@ export default function Home(): ReactElement {
 		<section className="presentation">
 			<div>
 				<Box className="presentation-container">
-					<>
-						<h1>Hello <span onMouseEnter={setPresentationFace(true)} onMouseLeave={setPresentationFace(false)}>;)</span></h1>
+					<div className="presentation-container-text">
+						<h1>Hello
+							<span onMouseEnter={setPresentationFace(true)} onMouseLeave={setPresentationFace(false)}>
+								&nbsp;&nbsp;;)
+							</span>
+						</h1>
 						<p>
 							{`
 							I'm Esteve, a ${formatDistanceToNowStrict(new Date("2005-11-06"))} old developer on a mission to 
 							bring ideas to life and craft innovative solutions. Embarking on this journey 
-							${formatDistanceToNowStrict(new Date("2021-12-26"))} ago, I've delved into realms of C#, C++, JavaScript, React, Vue, Laravel, 
+							${formatDistanceToNowStrict(new Date("2021-12-26"))} ago, I've delved into realms of C#, C++, 
+							JavaScript, React, Vue, Laravel, 
 							and beyond. Eager to embrace fresh challenges and perpetually pursuing knowledge, I stand ready to 
 							collaborate and create wonders together. Let's build something extraordinary!
-						`}
+							`}
 						</p>
-						<div className="presentation-socials">
-							<Social href="https://www.instagram.com/_memw1/" icon={<FaInstagram/>} name="Instagram"/>
-							<Social href="https://www.linkedin.com/in/esteve-autet-75b796298/" icon={<FaLinkedin/>} name="LinkedIn"/>
+					</div>
+					<div className="presentation-interactable">
+						<div className="presentation-experience">
+							<p>Take a look at</p>
+							<p>... Forget it ...</p>
+							<>{waitingPhrases[Math.floor(Math.random() * waitingPhrases.length)]}</>
 						</div>
-					</>
+						<div className="presentation-contact">
+							<p>Get in touch:</p>
+							<div className="presentation-socials">
+								<Social
+									href="https://discord.gg/pKMhTkRqjQ"
+									icon={<FaDiscord/>}
+									name="Discord"
+								/>
+								<Social
+									href="https://www.instagram.com/_memw1/"
+									icon={<FaInstagram/>}
+									name="Instagram"
+								/>
+								<Social
+									href="https://www.linkedin.com/in/esteve-autet-75b796298/"
+									icon={<FaLinkedin/>}
+									name="LinkedIn"
+								/>
+							</div>
+						</div>
+					</div>
 				</Box>
 				<div className="presentation-boxes">
-					<SpotifyStatus />
-					<GithubRating />
+					<SpotifyStatus/>
+					<GithubRating/>
 				</div>
 			</div>
 		</section>

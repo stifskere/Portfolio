@@ -120,6 +120,10 @@
 
 .spotify-box-controls > *:first-child {
     width: 69%;
+
+    @media (max-width: 1800px) {
+        width: 55%;
+    }
 }
 
 .logo-spotify {
@@ -132,7 +136,7 @@
 
     font-size: 1.5em;
 
-    @media (orientation: portrait) {
-        left: 91%;
+    @media (max-width: 1670px) {
+        display: none;
     }
 }

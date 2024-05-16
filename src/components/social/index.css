@@ -3,6 +3,10 @@
     height: 40px;
     width: 100px;
 
+    @media (orientation: portrait) {
+        width: 30px;
+    }
+
     display: flex;
 
     justify-content: center;
@@ -19,6 +23,12 @@
     transition: box-shadow 0.2s;
 
     cursor: pointer;
+}
+
+@media (orientation: portrait) {
+    .social > span {
+        display: none;
+    }
 }
 
 .social:hover {

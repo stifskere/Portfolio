@@ -38,12 +38,10 @@ export default function Social({
 		className={`${className} social`}
 		{...props}
 	>
-		<>
-			{hovering
-				? <FaArrowRight className="arrow-in" />
-				: cloneElement(icon, {className: "logo-in"})
-			}
-			<span>{name}</span>
-		</>
+		{hovering
+			? <FaArrowRight className="arrow-in" />
+			: cloneElement(icon, {className: "logo-in"})
+		}
+		<span>{name}</span>
 	</Box>
 }

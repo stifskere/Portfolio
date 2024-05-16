@@ -11,6 +11,7 @@ import Box from "@/components/box";
 import ProgressBar from "../progress-bar";
 
 import "./index.css";
+import {ReactFontSizeByTextLength} from "react-font-size-by-text-length";
 
 console.log(`
 That pretty Spotify component you see does API polling, since
@@ -34,11 +35,11 @@ export default function SpotifyStatus(): ReactElement {
 	const hovering: MutableRefObject<boolean> = useRef(false);
 
 	useEffect((): (() => void) => {
-		let lastData: SpotifySong | undefined;
+		let lastData: LocalRefObject<WaitingStates<SpotifySong>> = { current: undefined };
 		let msInterval: NodeJS.Timeout | undefined;
 		let lastUpdateTimestamp: number | undefined;
 
-		const interval: NodeJS.Timeout = setInterval(async (): Promise<void> => {
+		async function spotifyFetchCycle(lastData: LocalRefObject<WaitingStates<SpotifySong>>): Promise<void> {
 			const data: SpotifySong = await fetch("/spotify", {
 				headers: {
 					"Cache-Control": "no-cache"
@@ -46,12 +47,12 @@ export default function SpotifyStatus(): ReactElement {
 			}).then(res => res.json());
 
 			if (
-				lastData !== undefined
-				&& lastData !== null
+				lastData.current !== undefined
+				&& lastData.current !== null
 				&& data !== null
-				&& lastData.is_playing === data?.is_playing
-				&& lastData.song_url === data?.song_url
-				&& lastData.time_played === ms! + (lastUpdateTimestamp ? Date.now() - lastUpdateTimestamp : 0)
+				&& lastData.current.is_playing === data?.is_playing
+				&& lastData.current.song_url === data?.song_url
+				&& lastData.current.time_played === ms! + (lastUpdateTimestamp ? Date.now() - lastUpdateTimestamp : 0)
 			) {
 				return;
 			}
@@ -59,21 +60,22 @@ export default function SpotifyStatus(): ReactElement {
 			if (data !== null)
 				setMs(data!.time_played);
 
-			setCurrent(lastData = data);
+			setCurrent(lastData.current = data);
 			lastUpdateTimestamp = Date.now();
-		}, 5000);
+		}
 
-		msInterval = setInterval(() => {
-			if (
-				lastData !== null
-				&& lastData !== undefined
-				&& !lastData.is_playing
-				&& lastData.time_played >= lastData.time_total
-			)
+		const interval: NodeJS.Timeout = setInterval(spotifyFetchCycle, 5000, lastData);
+		spotifyFetchCycle(lastData).then();
+
+		msInterval = setInterval((lastData: LocalRefObject<WaitingStates<SpotifySong>>): void => {
+			if (lastData.current === undefined || lastData.current === null)
+				return;
+
+			if (!lastData.current.is_playing || lastData.current.time_played >= lastData.current.time_total)
 				return;
 
 			setMs(ms => ms! + 500);
-		}, 500);
+		}, 500, lastData);
 
 		return (): void => {
 			clearInterval(interval);

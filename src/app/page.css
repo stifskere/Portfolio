@@ -106,11 +106,13 @@ body {
     position: relative;
 
     height: 60vh;
+    min-height: 700px;
 
     margin: 10vh 0;
 
     @media (orientation: portrait) {
         height: 100vh;
+        min-height: 850px;
     }
 }
 
@@ -129,7 +131,7 @@ body {
     gap: 20px;
 }
 
-.presentation-container {
+.presentation-container-text {
     display: flex;
 
     flex-direction: column;
@@ -154,7 +156,7 @@ body {
     }
 }
 
-.presentation-container > p {
+.presentation-container-text > p {
     margin-right: 20px;
 
     font-size: 1.2em;
@@ -170,6 +172,52 @@ body {
     gap: 15px;
 
     flex-wrap: wrap;
+
+    margin-bottom: 15px;
+}
+
+.presentation-interactable {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 30px;
+}
+
+.presentation-experience {
+    color: white;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 15px;
+}
+
+.presentation-experience > p:nth-child(2) {
+    color: #565656;
+
+    margin-left: 30px;
+}
+
+.presentation-experience > p:nth-child(3) {
+    margin-left: 60px;
+}
+
+.presentation-contact {
+    color: white;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+    justify-content: center;
+
+    gap: 10px;
 }
 
 .presentation-boxes {
@@ -188,12 +236,14 @@ body {
     width: 50%;
     height: 20vh;
 
+    min-height: 170px;
+
     @media (orientation: portrait) {
         width: 100%;
     }
 }
 
-    /*projects section*/
+/*projects section*/
 .projects {
     position: relative;
 
