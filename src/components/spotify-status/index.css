@@ -131,4 +131,8 @@
     left: 92%;
 
     font-size: 1.5em;
+
+    @media (orientation: portrait) {
+        left: 91%;
+    }
 }
