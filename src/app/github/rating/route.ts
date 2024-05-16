@@ -1,6 +1,8 @@
 import {NextResponse} from "next/server";
 import {githubRequestInit} from "@/app/github/github-constants";
 
+export const revalidate: number = 1800
+
 export async function GET(): Promise<NextResponse<GithubRatingWithMark>> {
 	const profile: GithubProfile = await fetch(
 		"https://api.github.com/users/stifskere",

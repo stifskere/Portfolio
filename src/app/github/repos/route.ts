@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {githubRequestInit} from "@/app/github/github-constants";
 
-export const revalidate = 3600;
+export const revalidate: number = 3600;
 
 export async function GET(): Promise<NextResponse<GithubRepository[] | null>> {
 	const repositoryResponse: Response
