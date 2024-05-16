@@ -1,6 +1,5 @@
 import {NextResponse} from "next/server";
 import {githubRequestInit} from "@/app/github/github-constants";
-import {GithubCompiledGist, GithubGist} from "@/app/github/github-types";
 
 export const revalidate = 3600;
 

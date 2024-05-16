@@ -1,0 +1,97 @@
+
+.github-rating {
+    color: white;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    transition: box-shadow 0.2s;
+
+    cursor: pointer;
+}
+
+.github-rating:hover {
+    box-shadow: 0 0 10px white;
+}
+
+.github-rating-stats {
+    display: flex;
+
+    gap: 15px;
+}
+
+.github-rating-stats > div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.github-rating-stats > div:first-child > p {
+    display: flex;
+
+    gap: 5px;
+}
+
+.github-mark {
+    width: 50%;
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.github-mark > div {
+    width: 70%;
+}
+
+.github-mark > h3 {
+    font-size: 4em;
+}
+
+.github-status {
+    height: 100%;
+    width: 50%;
+
+    display: flex;
+
+    justify-content: space-evenly;
+    align-items: center;
+
+    flex-direction: column;
+}
+
+.github-status > h2 {
+    font-size: 1.8em;
+
+    position: relative;
+}
+
+.github-status > h2::before {
+    content: "";
+
+    height: 1px;
+    width: 0;
+
+    position: absolute;
+
+    background-color: white;
+
+    top: 105%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    transition: width 0.2s;
+}
+
+.github-rating:hover .github-status > h2::before {
+    width: 100%;
+}

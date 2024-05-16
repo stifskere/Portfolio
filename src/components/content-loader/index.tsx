@@ -1,7 +1,9 @@
 import {ReactElement} from "react";
+
 import {Choose, Otherwise, When} from "babel-plugin-jsx-control-statements/components";
-import Box from "@/components/box";
 import {CgSpinner} from "react-icons/cg";
+
+import Box from "@/components/box";
 
 import "./index.css";
 

@@ -1,5 +1,4 @@
 import {ReactElement} from "react";
-import {GithubCompiledGist} from "@/app/github/github-types";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { stackoverflowDark } from "react-syntax-highlighter/dist/esm/styles/hljs"
 

@@ -1,14 +1,10 @@
 "use client";
 
 import {ReactElement, useEffect, useState} from "react";
-import {Choose, When, Otherwise} from "babel-plugin-jsx-control-statements/components";
 import Image from "next/image";
 import {formatDistanceToNowStrict} from "date-fns";
 
-import {FaGithub, FaInstagram, FaLinkedin} from "react-icons/fa6";
-import {CgSpinner} from "react-icons/cg";
-
-import {GithubCompiledGist, GithubRepository} from "@/app/github/github-types";
+import {FaInstagram, FaLinkedin} from "react-icons/fa6";
 
 import Social from "@/components/social";
 import Box from "@/components/box";
@@ -16,13 +12,14 @@ import PageSelector from "@/components/page-selector";
 import Repository from "@/components/repository";
 import FooterList from "@/components/footer-list";
 import FooterContact from "@/components/footer-contact";
+import Gist from "@/components/gist";
+import Loader from "@/components/content-loader";
+import SpotifyStatus from "@/components/spotify-status";
 
 import logo from "../../public/logo.png";
 
 import "./page.css";
-import Gist from "@/components/gist";
-import Loader from "@/components/content-loader";
-
+import GithubRating from "@/components/github-rating";
 
 export default function Home(): ReactElement {
 	const [repos, setRepos]: StateTuple<GithubRepository[] | undefined | null> = useState();
@@ -68,25 +65,30 @@ export default function Home(): ReactElement {
 			</div>
 		</section>
 		<section className="presentation">
-			<Box className="presentation-container">
-				<>
-					<h1>Hello <span onMouseEnter={setPresentationFace(true)} onMouseLeave={setPresentationFace(false)}>;)</span></h1>
-					<p>
-						{`
+			<div>
+				<Box className="presentation-container">
+					<>
+						<h1>Hello <span onMouseEnter={setPresentationFace(true)} onMouseLeave={setPresentationFace(false)}>;)</span></h1>
+						<p>
+							{`
 							I'm Esteve, a ${formatDistanceToNowStrict(new Date("2005-11-06"))} old developer on a mission to 
 							bring ideas to life and craft innovative solutions. Embarking on this journey 
 							${formatDistanceToNowStrict(new Date("2021-12-26"))} ago, I've delved into realms of C#, C++, JavaScript, React, Vue, Laravel, 
 							and beyond. Eager to embrace fresh challenges and perpetually pursuing knowledge, I stand ready to 
 							collaborate and create wonders together. Let's build something extraordinary!
 						`}
-					</p>
-					<div className="presentation-socials">
-						<Social href="https://www.instagram.com/_memw1/" icon={<FaInstagram/>} name="Instagram"/>
-						<Social href="https://github.com/stifskere" icon={<FaGithub/>} name="GitHub"/>
-						<Social href="https://www.linkedin.com/in/esteve-autet-75b796298/" icon={<FaLinkedin/>} name="LinkedIn"/>
-					</div>
-				</>
-			</Box>
+						</p>
+						<div className="presentation-socials">
+							<Social href="https://www.instagram.com/_memw1/" icon={<FaInstagram/>} name="Instagram"/>
+							<Social href="https://www.linkedin.com/in/esteve-autet-75b796298/" icon={<FaLinkedin/>} name="LinkedIn"/>
+						</div>
+					</>
+				</Box>
+				<div className="presentation-boxes">
+					<SpotifyStatus />
+					<GithubRating />
+				</div>
+			</div>
 		</section>
 		<section className="projects">
 			<div>
@@ -101,7 +103,7 @@ export default function Home(): ReactElement {
 						<PageSelector
 							pageSelected={setCurrentPage}
 							className="repository-page-selector"
-							pages={Math.ceil(repos?.length ?? 0 / 3)}
+							pages={Math.ceil((repos?.length ?? 0) / 3)}
 						/>
 					</>
 				</Loader>

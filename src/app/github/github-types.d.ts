@@ -1,5 +1,28 @@
 
-export interface GithubRepositoryFromSource {
+declare interface GithubProfile {
+	login: string;
+	repos_url: string;
+	public_repos: number;
+	public_gists: number;
+	followers: number;
+	following: number;
+}
+
+declare interface GithubRating {
+	username: string;
+	contributions: number;
+	followers: number;
+	stars: number;
+	forks: number;
+	significantRepos: number;
+}
+
+declare interface GithubRatingWithMark extends GithubRating {
+	mark: string;
+	position: number;
+}
+
+declare interface GithubRepositoryFromSource {
 	name: string;
 	full_name: string;
 	description: string;
@@ -11,13 +34,14 @@ export interface GithubRepositoryFromSource {
 	url: string;
 
 	fork: boolean;
+	forks_count: number;
 	parent?: GithubRepositoryFromSource;
 
 	commits_url: string;
 	commit_count: number;
 }
 
-export type GithubRepository = Omit<
+declare type GithubRepository = Omit<
 	GithubRepositoryFromSource,
 	"commits_url" |
 	"forks_url" |
@@ -25,7 +49,7 @@ export type GithubRepository = Omit<
 	"fork"
 >;
 
-export interface GithubGist {
+declare interface GithubGist {
 	html_url: string;
 	files: { [key: string]: GithubGistFile }
 	public: boolean
@@ -38,7 +62,7 @@ interface GithubGistFile {
 	raw_url: string;
 }
 
-export interface GithubCompiledGist {
+declare interface GithubCompiledGist {
 	filename: string;
 	language: string;
 	cut_string: string;
