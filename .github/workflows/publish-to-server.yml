@@ -35,7 +35,11 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: "ApiGithubToken=${{ secrets.API_GITHUB_TOKEN }}"
+          build-args: |
+            ApiGithubToken=${{ secrets.API_GITHUB_TOKEN }}
+            ApiSpotifyAuth=${{ secrets.API_SPOTIFY_AUTH }}
+            ApiSpotifyRefresh=${{ secrets.API_SPOTIFY_REFRESH }}
+           
 
   pull-from-server:
     name: Pull from remote
