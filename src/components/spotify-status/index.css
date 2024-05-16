@@ -13,6 +13,11 @@
 
     height: 130px;
     width: 130px;
+
+    @media (orientation: portrait) {
+        height: 110px;
+        width: 110px;
+    }
 }
 
 .spotify-box-song > div > img {
@@ -58,6 +63,10 @@
     position: relative;
 
     width: fit-content;
+
+    @media (orientation: portrait) {
+        font-size: 1.3em;
+    }
 }
 
 .song-title::before {
@@ -86,6 +95,10 @@
     font-size: 0.8em;
 
     color: #b4b4b4;
+
+    @media (orientation: portrait) {
+        font-size: 0.7em;
+    }
 }
 
 .spotify-song-artist {
@@ -110,6 +123,10 @@
     font-size: 0.8em;
 
     text-align: right;
+
+    @media (orientation: portrait) {
+        font-size: 0.7em;
+    }
 }
 
 .spotify-box-controls {

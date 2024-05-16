@@ -171,6 +171,11 @@ body {
 
     gap: 15px;
 
+    @media (orientation: portrait) {
+        gap: 10px;
+        justify-content: center;
+    }
+
     flex-wrap: wrap;
 
     margin-bottom: 15px;
@@ -183,6 +188,10 @@ body {
     align-items: center;
 
     padding: 0 30px;
+
+    @media (orientation: portrait) {
+        padding: 0 20px;
+    }
 }
 
 .presentation-experience {
@@ -216,6 +225,10 @@ body {
 
     align-items: flex-start;
     justify-content: center;
+
+    @media (orientation: portrait) {
+        align-items: center;
+    }
 
     gap: 10px;
 }
