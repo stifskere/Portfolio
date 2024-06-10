@@ -33,11 +33,9 @@ export default function Home(): ReactElement {
 		<>... It&apos;s not here</>,
 		<>... The moment is not <b>NOW</b></>,
 		<>... The answer is not <b>HERE</b></>,
-		<>... We&apos;re still <b>WAITING</b></>,
 		<>... The time hasn&apos;t come</>,
 		<>... It&apos;s still being <b>AWAITED</b></>,
 		<>... The reveal is <b>PENDING</b></>,
-		<>... We are <b>ANTICIPATING</b></>,
 		<>... It remains <b>UNSEEN</b></>,
 		<>... The moment is <b>COMING</b></>,
 		<>... The wait is not <b>OVER</b></>
