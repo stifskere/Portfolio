@@ -14,7 +14,7 @@ export async function GET(): Promise<NextResponse<GithubCompiledGist[] | null>> 
 
 	const gistsObject: GithubCompiledGist[]
 		= (await gistsResponse.json() satisfies Promise<GithubGist[]>)
-			.filter((gist: GithubGist) => gist.public)
+			.filter((gist: GithubGist): boolean => gist.public)
 			.flatMap((gist: GithubGist) => Object.keys(gist.files)
 				.map(async (file: string) => {
 					let content: string =
@@ -27,7 +27,7 @@ export async function GET(): Promise<NextResponse<GithubCompiledGist[] | null>> 
 					const order: number = pinnedGists.findIndex(f => f == filename);
 
 					return {
-						filename: filename,
+						filename,
 						language: gist.files[file].language,
 						cut_string: content,
 						public_url: gist.html_url,

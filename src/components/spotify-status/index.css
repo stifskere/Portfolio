@@ -124,6 +124,8 @@
 
     text-align: right;
 
+    white-space: nowrap;
+
     @media (orientation: portrait) {
         font-size: 0.7em;
     }

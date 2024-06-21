@@ -16,6 +16,21 @@ body, html, main {
 }
 
 body {
+    overflow: hidden;
+}
+
+main {
+    height: 100vh;
+
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+}
+
+section, footer {
+    scroll-snap-align: center;
+}
+
+body {
     height: fit-content;
 
     background: linear-gradient( rgba(0, 0, 0, 40%), rgba(0, 0, 0, 40%)), url("/background.png");
