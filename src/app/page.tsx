@@ -23,8 +23,9 @@ import "./page.css";
 
 export default function Home(): ReactElement {
 	const [repos, setRepos]: StateTuple<GithubRepository[] | undefined | null> = useState();
-	const [page, setPage]: StateTuple<number> = useState(0);
+	const [reposPage, setReposPage]: StateTuple<number> = useState(0);
 	const [gists, setGists]: StateTuple<GithubCompiledGist[] | undefined | null> = useState();
+	const [gistsPage, setGistsPage]: StateTuple<number> = useState(0);
 	const [phrase, setPhrase]: StateTuple<ReactElement | undefined> = useState();
 	const [easterEnabled, setEasterEnabled]: StateTuple<boolean> = useState<boolean>(false);
 
@@ -90,8 +91,12 @@ export default function Home(): ReactElement {
 		};
 	}, []);
 
-	function setCurrentPage(page: number): void {
-		setPage(page - 1);
+	function setCurrentReposPage(page: number): void {
+		setReposPage(page - 1);
+	}
+
+	function setCurrentGistsPage(page: number): void {
+		setGistsPage(page - 1);
 	}
 
 	function setPresentationFace(smiling: boolean): (() => void) {
@@ -174,14 +179,14 @@ export default function Home(): ReactElement {
 				<Loader error={repos === null} waiting={repos === undefined} what="github repositories">
 					<>
 						<div className="repositories">
-							{repos?.slice(page * 3, Math.min((page + 1) * 3, repos!.length))
+							{repos?.slice(reposPage * 3, Math.min((reposPage + 1) * 3, repos!.length))
 								.map((repo: GithubRepository, index: number): ReactElement =>
 									<Repository repository={repo} key={index}/>
 								)}
 						</div>
 						<PageSelector
-							pageSelected={setCurrentPage}
-							className="repository-page-selector"
+							pageSelected={setCurrentReposPage}
+							className="global-page-selector"
 							pages={Math.ceil((repos?.length ?? 0) / 3)}
 						/>
 					</>
@@ -191,10 +196,15 @@ export default function Home(): ReactElement {
 		<section className="gists">
 			<Loader error={gists === null} waiting={gists === undefined} what="github gists">
 				<>
-					{gists
-						?.toSorted((gistA: GithubCompiledGist, gistB: GithubCompiledGist) => gistA.order - gistB.order)
+					{gists?.slice(gistsPage * 2, Math.min((gistsPage + 1) * 2, gists!.length))
+						.toSorted((gistA: GithubCompiledGist, gistB: GithubCompiledGist) => gistA.order - gistB.order)
 						.map((gist: GithubCompiledGist, index: number) => <Gist key={index} gist={gist}/>)
 					}
+					<PageSelector
+						pageSelected={setCurrentGistsPage}
+						className="global-page-selector"
+						pages={Math.ceil((gists?.length ?? 0) / 2)}
+					/>
 				</>
 			</Loader>
 		</section>
