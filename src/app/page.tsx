@@ -26,6 +26,7 @@ export default function Home(): ReactElement {
 	const [page, setPage]: StateTuple<number> = useState(0);
 	const [gists, setGists]: StateTuple<GithubCompiledGist[] | undefined | null> = useState();
 	const [phrase, setPhrase]: StateTuple<ReactElement | undefined> = useState();
+	const [easterEnabled, setEasterEnabled]: StateTuple<boolean> = useState<boolean>(false);
 
 	const waitingPhrases: ReactElement[] = [
 		<>... It&apos;s not the time <b>YET</b></>,
@@ -41,7 +42,17 @@ export default function Home(): ReactElement {
 		<>... The wait is not <b>OVER</b></>
 	];
 
-	useEffect((): void => {
+	useEffect((): (() => void) | void => {
+		if (easterEnabled)
+			return;
+
+		const code: string[] = [
+			"ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
+			"ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
+			"KeyA", "KeyB"
+		];
+		let codePosition: number = 0;
+
 		fetch("/github/repos")
 			.then(async (r: Response): Promise<void> => setRepos(
 				r.ok
@@ -59,6 +70,24 @@ export default function Home(): ReactElement {
 			));
 
 		setPhrase(waitingPhrases[Math.floor(Math.random() * waitingPhrases.length)]);
+
+		function listenKonamiSequence(ev: KeyboardEvent): void {
+			codePosition = ev.code == code[codePosition] ? codePosition + 1 : 0;
+
+			if (codePosition == code.length) {
+				document.documentElement.style.setProperty("--font-family", "Pixelify Sans");
+				document.documentElement.style.setProperty("--border-radius", "0");
+				document.documentElement.style.setProperty("--background", "url(\"/pixelated-background.png\")");
+				(document.getElementById("pixel-audio") as HTMLAudioElement).play().then();
+
+				setEasterEnabled(true);
+			}
+		}
+
+		document.addEventListener("keydown", listenKonamiSequence);
+		return (): void => {
+			document.removeEventListener("keydown", listenKonamiSequence);
+		};
 	}, []);
 
 	function setCurrentPage(page: number): void {
@@ -75,6 +104,9 @@ export default function Home(): ReactElement {
 	}
 
 	return <main>
+		<audio id="pixel-audio" hidden>
+			<source src="/explosion.mp3" type="audio/mp3"/>
+		</audio>
 		<section className="title">
 			<div>
 				<h1>MEMW</h1>
@@ -94,11 +126,13 @@ export default function Home(): ReactElement {
 							{`
 							I'm Esteve, a ${formatDistanceToNowStrict(new Date("2005-11-06"))} old developer I started
 							coding ${formatDistanceToNowStrict(new Date("2017-11-6"))} ago, when I was 12, even tho I
-							started my professional journey 2 years ago, I have experience in a lot of things, from
-							low level like compilers, operative systems to web development, desktop apps, and service
-							deployment, I'm usually freelancing now but also open to job offers, I speak english, 
-							spanish, catalan and russian, if you'd like to collaborate with me, get in touch.
+							started my professional journey ${formatDistanceToNowStrict(new Date("2021-12-26"))} ago, 
+							I have experience in a lot of things, from low level like compilers, operative systems 
+							to web development, desktop apps, and service deployment, I'm usually freelancing now 
+							but also open to job offers, I speak english, spanish, catalan and russian, if you'd 
+							like to collaborate with me, 
 							`}
+							<a href="#footer" className="desc-link">get in touch.</a>
 						</p>
 					</div>
 					<div className="presentation-interactable">
@@ -164,7 +198,7 @@ export default function Home(): ReactElement {
 				</>
 			</Loader>
 		</section>
-		<footer>
+		<footer id="footer">
 			<div className="footer-content">
 				<Image unoptimized src={logo} alt="logo"/>
 				<div>

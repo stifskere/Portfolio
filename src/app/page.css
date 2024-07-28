@@ -1,9 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+
+:root {
+    --font-family: "Figtree";
+    --border-radius: 8px;
+    --background: url("/background.png");
+}
 
 * {
     margin: 0;
 
-    font-family: "Figtree", sans-serif;
+    font-family: var(--font-family), sans-serif;
 
     user-select: none;
 
@@ -33,7 +40,7 @@ section, footer {
 body {
     height: fit-content;
 
-    background: linear-gradient( rgba(0, 0, 0, 40%), rgba(0, 0, 0, 40%)), url("/background.png");
+    background: linear-gradient( rgba(0, 0, 0, 40%), rgba(0, 0, 0, 40%)), var(--background);
 }
 
 .spin {
@@ -179,6 +186,20 @@ body {
     @media (orientation: portrait) {
         font-size: 1em;
     }
+}
+
+.presentation-container-text > p > a {
+    color: #676767;
+
+    text-decoration: none;
+
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+.presentation-container-text > p > a:hover {
+    color: white;
+
+    text-shadow: 0 0 10px;
 }
 
 .presentation-socials {
