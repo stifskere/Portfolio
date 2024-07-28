@@ -5,11 +5,11 @@ import {format, toZonedTime} from "date-fns-tz";
 import "./index.css";
 
 export default function FooterContact(): ReactElement {
-	const [second, setsecond]: StateTuple<number> = useState<number>(0);
+	const [second, setSecond]: StateTuple<number> = useState<number>(0);
 
 	useEffect((): (() => void) => {
 		const interval: NodeJS.Timeout = setInterval((): void => {
-			setsecond((last: number) => last > 60 ? 0 : last + 1);
+			setSecond((last: number) => last > 60 ? 0 : last + 1);
 		}, 1000);
 		return (): void => { clearInterval(interval); };
 	}, []);
@@ -42,7 +42,8 @@ export default function FooterContact(): ReactElement {
 				(<span>{formattedTime}</span>{timeDifference != 0
 				? `, ${Math.abs(timeDifference)} hours ${timeDifference > 0 ? "ahead" : "behind"}`
 				: ""}),
-				I'l reply <span>ASAP.</span></p>
+				I&apos;l reply <span>ASAP.</span>
+			</p>
 		</div>
 	</div>;
 }
