@@ -4,7 +4,7 @@ import {ReactElement, useEffect, useState} from "react";
 import Image from "next/image";
 import {formatDistanceToNowStrict} from "date-fns";
 
-import {FaDiscord, FaInstagram, FaLinkedin} from "react-icons/fa6";
+import {FaDiscord, FaLinkedin, FaWhatsapp} from "react-icons/fa6";
 
 import Social from "@/components/social";
 import Box from "@/components/box";
@@ -92,12 +92,12 @@ export default function Home(): ReactElement {
 						</h1>
 						<p>
 							{`
-							I'm Esteve, a ${formatDistanceToNowStrict(new Date("2005-11-06"))} old developer on a mission to 
-							bring ideas to life and craft innovative solutions. Embarking on this journey 
-							${formatDistanceToNowStrict(new Date("2021-12-26"))} ago, I've delved into realms of C#, C++, 
-							JavaScript, React, Vue, Laravel, 
-							and beyond. Eager to embrace fresh challenges and perpetually pursuing knowledge, I stand ready to 
-							collaborate and create wonders together. Let's build something extraordinary!
+							I'm Esteve, a ${formatDistanceToNowStrict(new Date("2005-11-06"))} old developer I started
+							coding ${formatDistanceToNowStrict(new Date("2017-11-6"))} ago, when I was 12, even tho I
+							started my professional journey 2 years ago, I have experience in a lot of things, from
+							low level like compilers, operative systems to web development, desktop apps, and service
+							deployment, I'm usually freelancing now but also open to job offers, I speak english, 
+							spanish, catalan and russian, if you'd like to collaborate with me, get in touch.
 							`}
 						</p>
 					</div>
@@ -111,14 +111,14 @@ export default function Home(): ReactElement {
 							<p>Get in touch:</p>
 							<div className="presentation-socials">
 								<Social
-									href="https://discord.gg/pKMhTkRqjQ"
+									href="https://discord.gg/4ng5HgmaMg"
 									icon={<FaDiscord/>}
-									name="Discord"
+									name="RustLangEs"
 								/>
 								<Social
-									href="https://www.instagram.com/_memw1/"
-									icon={<FaInstagram/>}
-									name="Instagram"
+									href="https://wa.me/34611080006?text=Hello%20I'd%20like%20to%20collaborate."
+									icon={<FaWhatsapp/>}
+									name="WhatsApp"
 								/>
 								<Social
 									href="https://www.linkedin.com/in/esteve-autet-75b796298/"

@@ -1,7 +1,9 @@
 
 .social {
     height: 40px;
-    width: 100px;
+    min-width: 100px;
+
+    width: min-content;
 
     @media (orientation: portrait) {
         width: 30px;
@@ -16,7 +18,7 @@
 
     color: white;
 
-    padding: 0 5px;
+    padding: 0 10px;
 
     font-weight: bold;
 
