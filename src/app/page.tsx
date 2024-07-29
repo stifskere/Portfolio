@@ -50,7 +50,7 @@ export default function Home(): ReactElement {
 		const code: string[] = [
 			"ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
 			"ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
-			"KeyA", "KeyB"
+			"KeyB", "KeyA"
 		];
 		let codePosition: number = 0;
 
