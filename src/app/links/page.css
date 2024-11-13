@@ -1,0 +1,4 @@
+
+*:not(button) {
+	color: white;
+}

@@ -1,25 +1,29 @@
-FROM node:alpine AS base
+FROM node:alpine
 
 ARG ApiGithubToken
-ENV ApiGithubToken=${ApiGithubToken}
 ARG ApiSpotifyAuth
-ENV ApiSpotifyAuth=${ApiSpotifyAuth}
 ARG ApiSpotifyRefresh
+
+ENV ApiGithubToken=${ApiGithubToken}
+ENV ApiSpotifyAuth=${ApiSpotifyAuth}
 ENV ApiSpotifyRefresh=${ApiSpotifyRefresh}
 
-RUN mkdir -p /usr/src/app
-
 WORKDIR /usr/src/app
-COPY . /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
 
 RUN touch /usr/src/app/.env
 RUN echo -e "API_GITHUB_TOKEN=\"$ApiGithubToken\" \
     \nAPI_SPOTIFY_AUTH=\"$ApiSpotifyAuth\" \
-    \nAPI_SPOTIFY_REFRESH=\"$ApiSpotifyRefresh\"" | cat >> /usr/src/app/.env
-
-RUN npm install
+    \nAPI_SPOTIFY_REFRESH=\"$ApiSpotifyRefresh\"" \
+	| cat >> /usr/src/app/.env
 
 RUN npm run build
 
 EXPOSE 10001
+
 CMD ["npm", "run", "start"]

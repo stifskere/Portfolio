@@ -19,6 +19,7 @@ import GithubRating from "@/components/github-rating";
 
 import logo from "../../public/logo.png";
 
+import "./layout.css";
 import "./page.css";
 
 export default function Home(): ReactElement {
@@ -220,8 +221,12 @@ export default function Home(): ReactElement {
 								href: "https://github.com/stifskere/Portfolio"
 							},
 							{
-								content: "PDF version",
-								href: "/resume.pdf"
+								content: "PDF version (English)",
+								href: "/resume-english.pdf"
+							},
+							{
+								content: "PDF version (Spanish)",
+								href: "/resume-spanish.pdf"
 							}
 						]}
 					</FooterList>

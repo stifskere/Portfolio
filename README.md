@@ -1,7 +1,7 @@
 
 # Portfolio
 
-This portfolio is made with NEXT.JS the main idea for this portfolio was because I saw a topographic-like design for my mouse pad, and I decided to make a website around it.
+This portfolio is made with `NextJs` the main idea for this portfolio was because I saw a topographic-like design for my mouse pad, and I decided to make my portfolio around it.
 
 ![img.png](https://d3fa68hw0m2vcc.cloudfront.net/631/309238823.jpeg)
 
@@ -21,35 +21,28 @@ Or you can also run the build tool that's configured to build a static version o
 npm run build
 ```
 
+When you build your own version you should change the `.github/workflows` folder, and make your own workflows. Since you don't have my poller API access, you might want to create your own poller or deploy it trough FTP somewhere else.
+
 ## Project dependencies
 
-To install all the dependencies explained below simply run
+To install all the dependencies simply run.
 
 ```bash
 npm install
 ```
 
-These dependencies are included in the `package.json`
+When you configure your project dependencies you will need to clone the `.env.example` file and fill it with the required environment variables.
 
-```json
-{
-	"dependencies": {
-		"date-fns": "^3.3.1", // format and convert dates
-		"next": "14.1.0",
-		"react": "^18",
-		"react-dom": "^18",
-		"react-icons": "^5.0.1", // all the icons used in this project
-		"sharp": "^0.33.2" // next.js image optimization
-	},
-	"devDependencies": {
-		"@babel/plugin-transform-class-static-block": "^7.23.4",
-		"@types/node": "^20",
-		"@types/react": "^18",
-		"@types/react-dom": "^18",
-		"babel-plugin-jsx-control-statements": "^4.1.2", // add <If> and similar blocks
-		"eslint": "^8", // format the code
-		"eslint-config-next": "14.1.0",
-		"typescript": "^5"
-	}
-}
-```
+- `API_GITHUB_TOKEN`: This token is used by the GitHub API all around the project, for the rate widget, the repositories widget, and the gists widget.
+- `API_SPOTIFY_AUTH`: This token is the general `Spotify` API token, you can get it in your `Spotify` developer profile after creating an app.
+- `API_SPOTIFY_REFRESH`: This token is the one you get when creating an `OAuth` flow with your app scopes, you need to simulate as if you were a user trying to use the app, which technically you are.
+
+For the Environment variables here are some useful pages I used to help me obtain the tokens.
+
+- [GitHub Access Token documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens): In this page you can read how to retrieve your `API_GITHUB_TOKEN`.
+- (Official `Spotify` API Authorization documentation)[https://developer.spotify.com/documentation/web-api/concepts/authorization]: In this page you can read the "official" authentication documentation, it is good so you can make yourself an idea of what you are working with.
+- (Stack overflow response)[https://stackoverflow.com/questions/60659902/how-to-get-oauth-token-from-spotify]: After reading this response I was able to get my `Spotify` tokens, as it explains how it works.
+
+## Spotify polling disclaimer
+
+You may or may not notice that there is a polling system implemented in the site so the `Spotify` widget can work. The implementation is proxied trough the `NextJs` back-end, and made to appeal [this discussion](https://community.spotify.com/t5/Spotify-for-Developers/Access-to-websockets/td-p/4955299). The proxy system ensures only a request every 5 seconds is made, which is within the `Spotify` API rate-limits. Now `Spotify` is only giving web-socket access to million dollar companies like Discord, which most of us are not.
