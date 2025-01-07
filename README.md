@@ -40,8 +40,8 @@ When you configure your project dependencies you will need to clone the `.env.ex
 For the Environment variables here are some useful pages I used to help me obtain the tokens.
 
 - [GitHub Access Token documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens): In this page you can read how to retrieve your `API_GITHUB_TOKEN`.
-- (Official `Spotify` API Authorization documentation)[https://developer.spotify.com/documentation/web-api/concepts/authorization]: In this page you can read the "official" authentication documentation, it is good so you can make yourself an idea of what you are working with.
-- (Stack overflow response)[https://stackoverflow.com/questions/60659902/how-to-get-oauth-token-from-spotify]: After reading this response I was able to get my `Spotify` tokens, as it explains how it works.
+- [Official `Spotify` API Authorization documentation](https://developer.spotify.com/documentation/web-api/concepts/authorization): In this page you can read the "official" authentication documentation, it is good so you can make yourself an idea of what you are working with.
+- [Stack overflow response](https://stackoverflow.com/questions/60659902/how-to-get-oauth-token-from-spotify): After reading this response I was able to get my `Spotify` tokens, as it explains how it works.
 
 ## Spotify polling disclaimer
 
