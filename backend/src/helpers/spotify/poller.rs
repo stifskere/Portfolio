@@ -618,32 +618,57 @@ impl<'s> SpotifySong {
     /// returns Option<SpotifyEvent>, Some(_) if an event should
     /// be sent, otherwise None.
     pub fn event_from_poll(current: Option<Arc<Self>>, other: Option<Arc<Self>>) -> Option<SpotifyEvent> {
+        // If the other song exists we
+        // grab it, otherwise we assume
+        // the client disconnected.
         let Some(other) = other
         else {
             return Some(SpotifyEvent::ClientDisconnected);
         };
 
+        // If the current song doesn't
+        // exist, but the other exists
+        // since we passed the last step
+        // it means there is a new song.
         let Some(current) = current
         else {
             return Some(SpotifyEvent::NewSong(other));
         };
 
+        // We check if all the authors
+        // from both songs are the same
+        // and have the same length.
         let same_authors = current.authors
             .iter()
             .all(|author| other.authors.contains(author))
             && current.authors.len() == other.authors.len();
 
+        // If the title does not match or the authors
+        // are not the same, we assume it's a new song.
         if current.title != other.title || !same_authors {
             return Some(SpotifyEvent::NewSong(other.clone()))
         }
 
+        // If both songs don't have the same is_playing
+        // status, it means there is a difference.
         if current.is_playing != other.is_playing {
+            // We match the new song.
             return Some(match other.is_playing {
+                // If the new song is playing, since
+                // the status aren't equal it means
+                // the song was unpaused.
                 true => SpotifyEvent::SongUnpaused(other.time_stamp()),
+
+                // If the new song is paused, since
+                // the status aren't equal it means
+                // the song was paused.
                 false => SpotifyEvent::SongPaused(other.time_stamp())
             })
         }
 
+        // If no condition from above
+        // matches it means no event
+        // should be sent.
         None
     }
 
