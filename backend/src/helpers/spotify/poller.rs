@@ -1,7 +1,7 @@
-use std::{borrow::Cow, sync::Arc, time::{Duration, SystemTimeError}};
+use std::{sync::Arc, time::{Duration, SystemTimeError}};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-use tokio::{spawn, sync::{broadcast::{channel, error::{RecvError, SendError}, Receiver, Sender}, Mutex}, time::sleep};
+use tokio::{spawn, sync::{broadcast::{channel, Receiver, Sender}, Mutex}, time::sleep};
 use crate::helpers::misc::expirable_object::{Expirable, ExpirableObject};
 use reqwest::{header::{AUTHORIZATION, CONTENT_TYPE}, Client as HttpClient, Error as ReqwestError, StatusCode};
 
@@ -18,15 +18,6 @@ pub enum SpotifyPollerError {
 
     #[error("Time calculation error: {0:#}")]
     Time(#[from] SystemTimeError),
-
-    #[error("There was an error while running the event loop: {0}")]
-    EventLoop(String),
-
-    #[error("Error while sending events from the loop: {0}")]
-    BroadcastSend(#[from] SendError<SpotifyEvent>),
-
-    #[error("Error while receiving events from the loop: {0}")]
-    BroadcastReceive(#[from] RecvError)
 }
 
 /// This structure describes a spotify song author,
