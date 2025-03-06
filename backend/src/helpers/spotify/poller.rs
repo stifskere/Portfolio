@@ -1,14 +1,16 @@
 use std::{sync::Arc, time::{Duration, SystemTimeError}};
-use serde::{Deserialize, Serialize};
+use actix_error_proc::ActixError;
+use serde::{ser::SerializeStruct, Deserialize, Serialize, Serializer};
 use thiserror::Error;
 use tokio::{spawn, sync::{broadcast::{channel, Receiver, Sender}, Mutex}, time::sleep};
 use crate::helpers::misc::expirable_object::{Expirable, ExpirableObject};
 use reqwest::{header::{AUTHORIZATION, CONTENT_TYPE}, Client as HttpClient, Error as ReqwestError, StatusCode};
+use serde_json::Error as JsonError;
 
 /// A spotify poller error, used specifically
 /// on the spotify poller as a generic error,
 /// it should usually be used with the `?` operator.
-#[derive(Error, Debug)]
+#[derive(ActixError, Error, Debug)]
 pub enum SpotifyPollerError {
     #[error("HTTP Request error: {0:#}")]
     Reqwest(#[from] ReqwestError),
@@ -18,6 +20,18 @@ pub enum SpotifyPollerError {
 
     #[error("Time calculation error: {0:#}")]
     Time(#[from] SystemTimeError),
+
+    // Since actix_web::Error is !Send, we need
+    // to convert the error to a String manually.
+    #[error("A WebSocket error occurred: {0}")]
+    Ws(String),
+
+    #[error("A Serialization error occurred: {0:#}")]
+    Json(#[from] JsonError),
+
+    #[error("An error occurred while subscribing to the poller: {0}")]
+    #[http_status(NotAcceptable)]
+    Subscription(String)
 }
 
 /// This structure describes a spotify song author,
@@ -57,9 +71,21 @@ pub struct SpotifySong {
     total_time: u32
 }
 
-#[derive(Clone, Serialize, Debug)]
+/// This represents a song timestamp,
+/// it's meant to indicate how much time
+/// from a song has played and the total
+/// song time, this way the front end
+/// can make syncronize a progress bar
+/// for the current song.
+#[derive(Clone, Copy, Serialize, Debug)]
 pub struct SongTimeStamp {
+    /// How much time has played
+    /// from the current song.
     played_time: u32,
+
+    /// How much time is left
+    /// for the current song
+    /// to finish.
     total_time: u32
 }
 
@@ -161,7 +187,7 @@ pub enum PollerStatus {
     ///
     /// The client will be registered as
     /// another listener.
-    Working(Arc<Receiver<SpotifyEvent>>),
+    Working(Arc<Mutex<Receiver<SpotifyEvent>>>),
 
     /// If the status is Errored it means
     /// that clients won't be able to connect.
@@ -195,7 +221,7 @@ pub enum PollerStatus {
 ///
 /// `main thread` refers as the thread where
 /// the SpotifyPoller exists.
-struct SpotifyPoller {
+pub struct SpotifyPoller {
     /// This token starts existing when
     /// the first song request is made.
     ///
@@ -290,15 +316,15 @@ impl SpotifyPoller {
     ///
     /// returns an instance of SpotifyPoller unless an error
     /// occurrs, in that case a generic SpotifyPollerError.
-    pub async fn new(auth: SpotifyAuthorization) -> Result<Self, SpotifyPollerError> {
-        Ok(Self {
+    pub fn new(auth: SpotifyAuthorization) -> Self {
+        Self {
             access_token: Arc::new(Mutex::new(Expirable::new_expired())),
             current_song: Arc::new(Mutex::new(None)),
             refresh_token: Arc::new(Mutex::new(auth.refresh_token)),
             client_id: Arc::new(auth.client_id),
             http_client: Arc::new(HttpClient::new()),
             poller_status: Arc::new(Mutex::new(PollerStatus::Fresh))
-        })
+        }
     }
 
     /// This private method allows the instance to
@@ -548,7 +574,7 @@ impl SpotifyPoller {
     /// the event loop in any way, otherwise
     /// you can expect concurrency errors,
     /// or non finishing async taks.
-    pub async fn get_receiver(self: Arc<Self>) -> Result<Arc<Receiver<SpotifyEvent>>, Arc<String>> {
+    pub async fn get_receiver(self: Arc<Self>) -> Result<Arc<Mutex<Receiver<SpotifyEvent>>>, Arc<String>> {
         // We create a mutable locked binding
         // to poller_status, which mutates
         // if the status is fresh and the thread
@@ -581,7 +607,7 @@ impl SpotifyPoller {
                 spawn(Self::poller_task(self.clone(), sender));
 
                 // Create a shared reference to the receiver
-                let receiver = Arc::new(receiver);
+                let receiver = Arc::new(Mutex::new(receiver));
                 // change the poller_status to working
                 // and hold a reference to the receiver inside.
                 *poller_status = PollerStatus::Working(receiver.clone());
@@ -601,7 +627,7 @@ impl SpotifyPoller {
 }
 
 
-impl<'s> SpotifySong {
+impl SpotifySong {
     /// This function makes the comparisons between two songs
     /// to check if an event should be sent to diferentiate
     /// both songs, in this case the songs should be the
@@ -707,5 +733,30 @@ impl SongTimeStamp {
 impl PartialEq for SpotifyArtist {
     fn eq(&self, other: &Self) -> bool {
         self.name == other.name
+    }
+}
+
+impl Serialize for SpotifyEvent {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        macro_rules! ss {
+            ($event:literal, $data:expr) => {{
+                let mut s = serializer.serialize_struct("SpotifyEvent", 2)?;
+                s.serialize_field("event", $event)?;
+                s.serialize_field("data", $data)?;
+                s.end()
+            }};
+        }
+
+        match self {
+            Self::SongPaused(timestamp) => ss!("SongPaused", timestamp),
+
+            Self::SongUnpaused(timestamp) => ss!("SongUnpaused", timestamp),
+
+            Self::NewSong(song) => ss!("NewSong", song),
+
+            Self::ClientDisconnected => ss!("ClientDisconnected", &None::<()>),
+
+            Self::PollerError(error) => ss!("PollerError", error)
+        }
     }
 }
