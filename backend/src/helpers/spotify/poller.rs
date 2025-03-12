@@ -1,11 +1,23 @@
-use std::{sync::Arc, time::{Duration, SystemTimeError}};
+use std::time::{Duration, SystemTimeError};
+use std::sync::Arc;
 use actix_error_proc::ActixError;
-use serde::{ser::SerializeStruct, Deserialize, Serialize, Serializer};
+use base64::prelude::BASE64_URL_SAFE;
+use base64::Engine;
+use serde::{Deserialize, Serialize, Serializer};
+use serde::ser::SerializeStruct;
 use thiserror::Error;
-use tokio::{spawn, sync::{broadcast::{channel, Receiver, Sender}, Mutex}, time::sleep};
+use tokio::spawn;
+use tokio::time::sleep;
+use tokio::sync::Mutex;
+use tokio::sync::broadcast::{channel, Receiver, Sender};
 use crate::helpers::misc::expirable_object::{Expirable, ExpirableObject};
-use reqwest::{header::{AUTHORIZATION, CONTENT_TYPE}, Client as HttpClient, Error as ReqwestError, StatusCode};
+use reqwest::{Client as HttpClient, Error as ReqwestError, StatusCode};
+use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use serde_json::Error as JsonError;
+use super::api_responses::{ApiSpotifyError, ApiSpotifySong, SongTimestamp, SpotifySong};
+
+// TODO: Do not repeat the disconnected event
+// TODO: permit event_from_poll send multiple events (to unpause when a song changes.)
 
 /// A spotify poller error, used specifically
 /// on the spotify poller as a generic error,
@@ -15,10 +27,10 @@ pub enum SpotifyPollerError {
     #[error("HTTP Request error: {0:#}")]
     Reqwest(#[from] ReqwestError),
 
-    #[error("Spotify API abnormal response found.")]
-    Api,
+    #[error("Spotify API abnormal response found {0:#}.")]
+    Api(ApiSpotifyError),
 
-    #[error("Time calculation error: {0:#}")]
+    #[error("Time calculation error: \"{0:#}\".")]
     Time(#[from] SystemTimeError),
 
     // Since actix_web::Error is !Send, we need
@@ -32,61 +44,6 @@ pub enum SpotifyPollerError {
     #[error("An error occurred while subscribing to the poller: {0}")]
     #[http_status(NotAcceptable)]
     Subscription(String)
-}
-
-/// This structure describes a spotify song author,
-/// commonly refered as "artist" by the spotify
-/// API itself.
-///
-/// The inside fields are not documented, because
-/// they are raw spotify data in all cases.
-#[derive(Deserialize, Serialize, Debug)]
-pub struct SpotifyArtist {
-    name: String,
-    url: String
-}
-
-/// This structure describes a spotify song from a
-/// "currenly playing" query, some of the names
-/// being changed for sake of readability.
-///
-/// The inside fields are not documented, because
-/// they are raw spotify data in all cases.
-#[derive(Deserialize, Serialize, Debug)]
-pub struct SpotifySong {
-    #[serde(rename(deserialize = "artist"))]
-    authors: Vec<SpotifyArtist>,
-
-    #[serde(rename(deserialize = "album_image_url"))]
-    image_url: String,
-
-    title: String,
-    song_url: String,
-
-    #[serde(skip_serializing)]
-    is_playing: bool,
-    #[serde(rename(deserialize = "time_played"))]
-    played_time: u32,
-    #[serde(rename(deserialize = "time_total"))]
-    total_time: u32
-}
-
-/// This represents a song timestamp,
-/// it's meant to indicate how much time
-/// from a song has played and the total
-/// song time, this way the front end
-/// can make syncronize a progress bar
-/// for the current song.
-#[derive(Clone, Copy, Serialize, Debug)]
-pub struct SongTimeStamp {
-    /// How much time has played
-    /// from the current song.
-    played_time: u32,
-
-    /// How much time is left
-    /// for the current song
-    /// to finish.
-    total_time: u32
 }
 
 /// A SpotifyEvent is a serializable event
@@ -105,7 +62,7 @@ pub enum SpotifyEvent {
     /// timestamp for the current
     /// song, for syncronization
     /// purposes.
-    SongPaused(SongTimeStamp),
+    SongPaused(SongTimestamp),
 
     /// This event happens
     /// when the registed user
@@ -115,7 +72,7 @@ pub enum SpotifyEvent {
     /// timestamp for the current
     /// song, for syncronization
     /// purposes.
-    SongUnpaused(SongTimeStamp),
+    SongUnpaused(SongTimestamp),
 
     /// This event happens
     /// when a new song starts
@@ -168,11 +125,16 @@ pub struct SpotifyAuthorization {
     /// The client ID can be found in your
     /// application control panel.
     pub client_id: String,
+
+    /// The client secret can be found in your
+    /// application control panel.
+    pub client_secret: String
 }
 
 /// The poller status indicates what happens
 /// when new clients are registered to this
 /// poller.
+#[derive(Debug)]
 pub enum PollerStatus {
     /// If the status is Fresh it means
     /// this is the first client to connect.
@@ -282,6 +244,20 @@ pub struct SpotifyPoller {
     /// but it does never mutate.
     client_id: Arc<String>,
 
+    /// The client_secret is the secret related
+    /// to the earlier specified client_id, it
+    /// serves for authentication, on common endpoints
+    /// such as for token renewal.
+    ///
+    /// The spotify secret is directly obtained
+    /// from the SpotifyAuthorization struct
+    /// in the constructor.
+    ///
+    /// This client_secret instance is shared
+    /// between the main thread and the event_loop
+    /// thread, but it does never mutate.
+    client_secret: Arc<String>,
+
     /// This HTTP client is created along the
     /// SpotifyPoller instance, and it is shared
     /// between the main thread and the event_loop
@@ -322,9 +298,20 @@ impl SpotifyPoller {
             current_song: Arc::new(Mutex::new(None)),
             refresh_token: Arc::new(Mutex::new(auth.refresh_token)),
             client_id: Arc::new(auth.client_id),
+            client_secret: Arc::new(auth.client_secret),
             http_client: Arc::new(HttpClient::new()),
             poller_status: Arc::new(Mutex::new(PollerStatus::Fresh))
         }
+    }
+
+    fn basic_auth(&self) -> String {
+        format!(
+            "Basic {}",
+            BASE64_URL_SAFE
+                .encode(
+                    format!("{}:{}", self.client_id, self.client_secret)
+                )
+        )
     }
 
     /// This private method allows the instance to
@@ -368,15 +355,28 @@ impl SpotifyPoller {
             .http_client
             .post("https://accounts.spotify.com/api/token")
             .header(CONTENT_TYPE, "application/x-www-form-urlencoded")
+            .header(AUTHORIZATION, self.basic_auth())
             .form(&[
                 ("grant_type", "refresh_token"),
                 ("refresh_token", &self.refresh_token.lock().await),
-                ("client_id", &self.client_id)
             ])
             .send()
-            .await?
-            .error_for_status()
-            .map_err(|_| SpotifyPollerError::Api)?
+            .await?;
+
+        // If something didn't go well we instead
+        // serialize the response as an error and
+        // make a SpotifyPollerError from it.
+        if !response.status().is_success() {
+            return Err(SpotifyPollerError::Api(
+                response
+                    .json()
+                    .await?
+            ));
+        }
+
+        // Otherwise we overwrite response to
+        // the serialized RefreshTokenResponse.
+        let response = response
             .json::<RefreshTokenResponse>()
             .await?;
 
@@ -422,10 +422,10 @@ impl SpotifyPoller {
                 // or unpaused.
                 vec![
                     SpotifyEvent::NewSong(song.clone()),
-                    if song.is_playing {
-                        SpotifyEvent::SongUnpaused(song.time_stamp())
+                    if song.is_playing() {
+                        SpotifyEvent::SongUnpaused(song.timestamp())
                     } else {
-                        SpotifyEvent::SongPaused(song.time_stamp())
+                        SpotifyEvent::SongPaused(song.timestamp())
                     }
                 ]
             },
@@ -436,7 +436,7 @@ impl SpotifyPoller {
                 // at 0:0.
                 vec![
                     SpotifyEvent::ClientDisconnected,
-                    SpotifyEvent::SongPaused(SongTimeStamp::zero())
+                    SpotifyEvent::SongPaused(SongTimestamp::zero())
                 ]
             }
         })
@@ -466,9 +466,18 @@ impl SpotifyPoller {
             .get("https://api.spotify.com/v1/me/player/currently-playing")
             .header(AUTHORIZATION, format!("Bearer {token}"))
             .send()
-            .await?
-            .error_for_status()
-            .map_err(|_| SpotifyPollerError::Api)?;
+            .await?;
+
+        // If something didn't go well we instead
+        // serialize the response as an error and
+        // make a SpotifyPollerError from it.
+        if !response.status().is_success() {
+            return Err(SpotifyPollerError::Api(
+                response
+                    .json()
+                    .await?
+            ));
+        }
 
         // If the response is no content it means that
         // there is no client connected. (ignoring the body)
@@ -481,8 +490,9 @@ impl SpotifyPoller {
         // call on the response, so we obtain
         // the deserialized JSON body.
         let response_body = response
-            .json()
-            .await?;
+            .json::<ApiSpotifySong>()
+            .await?
+            .into();
 
         // and return that JSON body.
         Ok(Some(response_body))
@@ -574,7 +584,7 @@ impl SpotifyPoller {
     /// the event loop in any way, otherwise
     /// you can expect concurrency errors,
     /// or non finishing async taks.
-    pub async fn get_receiver(self: Arc<Self>) -> Result<Arc<Mutex<Receiver<SpotifyEvent>>>, Arc<String>> {
+    pub async fn get_receiver(self: &Arc<Self>) -> Result<Arc<Mutex<Receiver<SpotifyEvent>>>, Arc<String>> {
         // We create a mutable locked binding
         // to poller_status, which mutates
         // if the status is fresh and the thread
@@ -626,7 +636,6 @@ impl SpotifyPoller {
     }
 }
 
-
 impl SpotifySong {
     /// This function makes the comparisons between two songs
     /// to check if an event should be sent to diferentiate
@@ -664,31 +673,31 @@ impl SpotifySong {
         // We check if all the authors
         // from both songs are the same
         // and have the same length.
-        let same_authors = current.authors
+        let same_authors = current.authors()
             .iter()
-            .all(|author| other.authors.contains(author))
-            && current.authors.len() == other.authors.len();
+            .all(|author| other.authors().contains(author))
+            && current.authors().len() == other.authors().len();
 
         // If the title does not match or the authors
         // are not the same, we assume it's a new song.
-        if current.title != other.title || !same_authors {
+        if current.title() != other.title() || !same_authors {
             return Some(SpotifyEvent::NewSong(other.clone()))
         }
 
         // If both songs don't have the same is_playing
         // status, it means there is a difference.
-        if current.is_playing != other.is_playing {
+        if current.is_playing() != other.is_playing() {
             // We match the new song.
-            return Some(match other.is_playing {
+            return Some(match other.is_playing() {
                 // If the new song is playing, since
                 // the status aren't equal it means
                 // the song was unpaused.
-                true => SpotifyEvent::SongUnpaused(other.time_stamp()),
+                true => SpotifyEvent::SongUnpaused(other.timestamp()),
 
                 // If the new song is paused, since
                 // the status aren't equal it means
                 // the song was paused.
-                false => SpotifyEvent::SongPaused(other.time_stamp())
+                false => SpotifyEvent::SongPaused(other.timestamp())
             })
         }
 
@@ -696,43 +705,6 @@ impl SpotifySong {
         // matches it means no event
         // should be sent.
         None
-    }
-
-    /// Obtain the timestamp from the song
-    /// as a separated structure.
-    ///
-    /// This structure is not async proof
-    /// so what you do with the value is up
-    /// to you.
-    ///
-    /// The method uses the `u32` Copy implementation
-    /// to create the new structure.
-    pub fn time_stamp(&self) -> SongTimeStamp {
-        SongTimeStamp {
-            played_time: self.played_time,
-            total_time: self.total_time
-        }
-    }
-}
-
-impl SongTimeStamp {
-    /// returns a new instance of SongTimeStamp
-    /// at 0:0.
-    pub fn zero() -> Self {
-        Self {
-            played_time: 0,
-            total_time: 0
-        }
-    }
-}
-
-/// This is implemented to compare
-/// artist equality, to be used
-/// in the event_from_poll method
-/// of the SpotifySong struct.
-impl PartialEq for SpotifyArtist {
-    fn eq(&self, other: &Self) -> bool {
-        self.name == other.name
     }
 }
 

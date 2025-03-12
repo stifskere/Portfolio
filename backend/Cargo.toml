@@ -7,6 +7,8 @@ edition = "2024"
 actix-web = "4.9.0"
 actix-ws = "0.3.0"
 actix_error_proc = "1.1.4"
+base64 = "0.22.1"
+dotenvy = "0.15.7"
 futures-util = "0.3.31"
 mpmc-scheduler = "0.3.1"
 reqwest = { version = "0.12.12", features = ["json"] }

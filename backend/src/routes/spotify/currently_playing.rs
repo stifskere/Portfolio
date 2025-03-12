@@ -1,11 +1,12 @@
-use std::sync::Arc;
 use actix_error_proc::{proof_route, HttpResult};
-use actix_web::{rt::spawn, web::{Data, Payload}, HttpRequest};
+use actix_web::HttpRequest;
+use actix_web::web::{Data, Payload};
+use actix_web::rt::spawn;
+use actix_ws::handle as handle_ws;
 use serde_json::to_string as to_json;
 use crate::helpers::spotify::poller::{SpotifyPoller, SpotifyPollerError};
-use actix_ws::handle as handle_ws;
 
-#[proof_route(get("/spotify/currently-playing"))]
+#[proof_route(get("/currently-playing"))]
 async fn currently_playing(req: HttpRequest, stream: Payload, poller: Data<SpotifyPoller>) -> HttpResult<SpotifyPollerError> {
     // Declare the websocket handler.
     //
@@ -39,7 +40,8 @@ async fn currently_playing(req: HttpRequest, stream: Payload, poller: Data<Spoti
     // If the receiver couldn't be obtained due
     // to the poller internal status, a NotAcceptable
     // http status code will be sent instead.
-    let receiver = Arc::clone(&poller)
+    let receiver = poller
+        .clone()
         .get_receiver()
         .await
         .map_err(|err| SpotifyPollerError::Subscription(err.to_string()))?;

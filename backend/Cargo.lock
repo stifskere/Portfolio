@@ -292,6 +292,7 @@ dependencies = [
  "actix-web",
  "actix-ws",
  "actix_error_proc",
+ "base64",
  "dotenvy",
  "futures-util",
  "mpmc-scheduler",
