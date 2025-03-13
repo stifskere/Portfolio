@@ -17,7 +17,8 @@ use serde_json::Error as JsonError;
 use super::api_responses::{ApiSpotifyError, ApiSpotifySong, SongTimestamp, SpotifySong};
 
 // TODO: Do not repeat the disconnected event
-// TODO: permit event_from_poll send multiple events (to unpause when a song changes.)
+// TODO: Permit event_from_poll send multiple events (to unpause when a song changes.)
+// TODO: Document everything.
 
 /// A spotify poller error, used specifically
 /// on the spotify poller as a generic error,
@@ -304,6 +305,9 @@ impl SpotifyPoller {
         }
     }
 
+    /// This private method grabs the server authentication data
+    /// and formats it for the basic auth header as the spotify
+    /// documentation wants.
     fn basic_auth(&self) -> String {
         format!(
             "Basic {}",
@@ -409,37 +413,24 @@ impl SpotifyPoller {
     /// display in the client side is used to syncronize
     /// the same client with the poller.
     ///
-    /// returns a queue of SpotifyEvents that should be sent
-    /// in chain, that events will indicate the client
-    /// how it should behave, unless an error occurrs.
-    /// In that case a generic SpotifyPollerError.
-    pub async fn sync(&self) -> Result<Vec<SpotifyEvent>, SpotifyPollerError> {
-        Ok(match self.current_song.lock().await.as_ref() {
+    /// returns the last relevant SpotifyEvent for the client
+    /// to sync.
+    pub async fn sync(&self) -> SpotifyEvent {
+        match self.current_song.lock().await.as_ref() {
             Some(song) => {
-                // if a song is playing we send
-                // the playing song and an additional
-                // event whether the song is paused
-                // or unpaused.
-                vec![
-                    SpotifyEvent::NewSong(song.clone()),
-                    if song.is_playing() {
-                        SpotifyEvent::SongUnpaused(song.timestamp())
-                    } else {
-                        SpotifyEvent::SongPaused(song.timestamp())
-                    }
-                ]
+                // If a song is playing we send the song
+                // as a new song for the client, the event
+                // has enough data for the client to sync
+                // the timer and so on.
+                SpotifyEvent::NewSong(song.clone())
             },
             None => {
-                // if a song is not playing
-                // we send a ClientDisconnected
-                // event along a SongPaused
-                // at 0:0.
-                vec![
-                    SpotifyEvent::ClientDisconnected,
-                    SpotifyEvent::SongPaused(SongTimestamp::zero())
-                ]
+                // If a song is not playing we simply
+                // set the client as disconneted, no timer
+                // should be shown if there is no song.
+                SpotifyEvent::ClientDisconnected
             }
-        })
+        }
     }
 
     /// THIS FUNCTION IS A RAW SPOTIFY API CALL
@@ -653,6 +644,13 @@ impl SpotifySong {
     /// returns Option<SpotifyEvent>, Some(_) if an event should
     /// be sent, otherwise None.
     pub fn event_from_poll(current: Option<Arc<Self>>, other: Option<Arc<Self>>) -> Option<SpotifyEvent> {
+        // If both songs are actually None which means
+        // that the client is disconnected then we don't
+        // send any event.
+        if current.is_none() && other.is_none() {
+            return None;
+        }
+
         // If the other song exists we
         // grab it, otherwise we assume
         // the client disconnected.
@@ -675,7 +673,11 @@ impl SpotifySong {
         // and have the same length.
         let same_authors = current.authors()
             .iter()
-            .all(|author| other.authors().contains(author))
+            .all(|c_author| other
+                .authors()
+                .iter()
+                .any(|o_author| c_author.name() == o_author.name())
+            )
             && current.authors().len() == other.authors().len();
 
         // If the title does not match or the authors

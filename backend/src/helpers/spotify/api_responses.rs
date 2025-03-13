@@ -14,28 +14,47 @@ pub struct ApiSpotifyError {
     description: Option<String>
 }
 
+/// This struct is part of the Spotify api response
+/// it contains the URLS for the social media platforms
+/// we actually want, it's separated in a struct for
+/// deserialization purposes.
 #[derive(Deserialize, Serialize, Debug)]
 pub struct ApiSpotifyExternalUrls {
     spotify: Option<String>
 }
 
 /// This structure describes a spotify song author,
-/// commonly refered as "artist" by the spotify
-/// API itself.
-///
-/// The inside fields are not documented, because
-/// they are raw spotify data in all cases.
+/// commonly refered as "artist" by the Spotify
+/// api itself. This is directly returned by the
+/// Spotify api.
 #[derive(Deserialize, Debug)]
 pub struct ApiSpotifyArtist {
+    /// This are the URLS this artist linked
+    /// to their Spotify profile.
     #[serde(rename(deserialize = "external_urls"))]
     urls: ApiSpotifyExternalUrls,
+    /// This is the artist profile name
+    /// from Spotify directly.
     name: String,
 }
 
+/// This structure describes an image, in this
+/// case it's used for the song thumbnail,
+/// this data is returned directly from the
+/// Spotify api.
+///
+/// In this case the height and width are used
+/// to get the bigger one, as Spotify returns
+/// us a list of thumbnails for different sizes.
 #[derive(Deserialize, Debug)]
 pub struct ApiSpotifySongImage {
+    /// This is used for the height
+    /// of the thumbnail.
     height: u16,
+    /// This is used for the width
+    /// of the thumbmail.
     width: u16,
+    /// This is the thumbnail URL directly.
     url: String
 }
 
@@ -110,6 +129,7 @@ pub struct SpotifySong {
     is_playing: bool,
     timestamp: SongTimestamp,
 
+    song_url: Option<String>,
     thumbnail_url: Option<String>,
 }
 
@@ -149,7 +169,8 @@ impl Into<SpotifySong> for ApiSpotifySong {
             timestamp: SongTimestamp {
                 played_time: self.played_time,
                 total_time: self.item.total_time
-            } ,
+            },
+            song_url: self.item.urls.spotify,
             thumbnail_url: self.item.album.images
                 .into_iter()
                 .max_by_key(|image| (image.height, image.width))
@@ -158,22 +179,13 @@ impl Into<SpotifySong> for ApiSpotifySong {
     }
 }
 
-impl SongTimestamp {
-    /// returns a new instance of SongTimeStamp
-    /// at 0:0.
-    pub fn zero() -> Self {
-        Self {
-            played_time: 0,
-            total_time: 0
-        }
-    }
-}
-
 impl SpotifyArtist {
     pub fn name(&self) -> &str {
+    #[allow(unused)]
         &self.name
     }
 
+    #[allow(unused)]
     pub fn url(&self) -> Option<&String> {
         self.url.as_ref()
     }
@@ -191,22 +203,27 @@ impl PartialEq for SpotifyArtist {
 
 
 impl SpotifySong {
+    #[allow(unused)]
     pub fn title(&self) -> &str {
         &self.title
     }
 
+    #[allow(unused)]
     pub fn authors(&self) -> &[SpotifyArtist] {
         &self.authors
     }
 
+    #[allow(unused)]
     pub fn is_playing(&self) -> bool {
         self.is_playing
     }
 
+    #[allow(unused)]
     pub fn timestamp(&self) -> SongTimestamp {
         self.timestamp
     }
 
+    #[allow(unused)]
     pub fn thumbnail_url(&self) -> Option<&String> {
         self.thumbnail_url.as_ref()
     }

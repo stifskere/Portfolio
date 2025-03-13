@@ -16,22 +16,10 @@ async fn currently_playing(req: HttpRequest, stream: Payload, poller: Data<Spoti
     let (res, mut session, _stream) = handle_ws(&req, stream)
         .map_err(|err| SpotifyPollerError::Ws(format!("{err:#}")))?;
 
-    // We send all the events to syncronize
-    // this specific client.
-    for event in poller.sync().await? {
-        // We send all the events
-        // and ignore the error, since
-        // the error only tells us if the
-        // client disconnected.
-        //
-        // Since we didn't subscribe the
-        // client yet it doesn't matter.
-        //
-        // If there is an error sending
-        // actual new events then the client
-        // gets removed.
-        session.text(to_json(&event)?).await.ok();
-    }
+    // We send the relevant SpotifyEvent to the client,
+    // so when it connects it can start the syncronization
+    // instead of waiting for the next event to happen.
+    session.text(to_json(&poller.sync().await)?).await.ok();
 
     // We clone the poller shared reference
     // that data contains and obtain

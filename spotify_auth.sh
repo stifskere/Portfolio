@@ -212,6 +212,7 @@ do
 	# until its full, also removing carriage
 	# returns to avoid bad formatting.
 	request=$(cat "$request_tmp" | tr -d '\r');
+	echo $request;
 done
 
 # We remove the temporary
@@ -332,6 +333,10 @@ if [ -n "$save_path" ]; then
 
     # And then to store or update the client_id.
     store_variable "$client_id_name" "$save_path" "$client_id";
+
+	read -p "Introduce a variable name for the client secret: " client_secret_name;
+
+	store_variable "$client_secret_name" "$save_path" "$client_secret";
 
     exit 0;
 fi
