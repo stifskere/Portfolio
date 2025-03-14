@@ -11,14 +11,15 @@ use tokio::time::sleep;
 use tokio::sync::Mutex;
 use tokio::sync::broadcast::{channel, Receiver, Sender};
 use crate::helpers::misc::expirable_object::{Expirable, ExpirableObject};
+use crate::helpers::misc::functions::in_range;
 use reqwest::{Client as HttpClient, Error as ReqwestError, StatusCode};
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use serde_json::Error as JsonError;
 use super::api_responses::{ApiSpotifyError, ApiSpotifySong, SongTimestamp, SpotifySong};
 
-// TODO: Do not repeat the disconnected event
-// TODO: Permit event_from_poll send multiple events (to unpause when a song changes.)
 // TODO: Document everything.
+
+const POLLING_RATE_SECS: i32 = 5;
 
 /// A spotify poller error, used specifically
 /// on the spotify poller as a generic error,
@@ -74,6 +75,16 @@ pub enum SpotifyEvent {
     /// song, for syncronization
     /// purposes.
     SongUnpaused(SongTimestamp),
+
+    /// This event happens
+    /// when the timestamp changes
+    /// to time over the threshold.
+    ///
+    /// so if the polling time is 5
+    /// seconds song changes that are
+    /// not 5 seconds forward at max
+    /// will trigger this event.
+    TimstampChanged(SongTimestamp),
 
     /// This event happens
     /// when a new song starts
@@ -150,7 +161,7 @@ pub enum PollerStatus {
     ///
     /// The client will be registered as
     /// another listener.
-    Working(Arc<Mutex<Receiver<SpotifyEvent>>>),
+    Working(Receiver<SpotifyEvent>),
 
     /// If the status is Errored it means
     /// that clients won't be able to connect.
@@ -496,6 +507,7 @@ impl SpotifyPoller {
         // we start an infinite loop for the
         // task to be repeated.
         loop {
+            println!("Poll song");
             // we obtain a new song and match
             // whether obtaining the song didn't return
             // any error.
@@ -548,7 +560,7 @@ impl SpotifyPoller {
 
             // we sleep this thread for 5 seconds
             // and fetch a new song again.
-            sleep(Duration::from_secs(5)).await;
+            sleep(Duration::from_secs(POLLING_RATE_SECS as u64)).await;
         }
     }
 
@@ -575,7 +587,7 @@ impl SpotifyPoller {
     /// the event loop in any way, otherwise
     /// you can expect concurrency errors,
     /// or non finishing async taks.
-    pub async fn get_receiver(self: &Arc<Self>) -> Result<Arc<Mutex<Receiver<SpotifyEvent>>>, Arc<String>> {
+    pub async fn get_receiver(self: &Arc<Self>) -> Result<Receiver<SpotifyEvent>, Arc<String>> {
         // We create a mutable locked binding
         // to poller_status, which mutates
         // if the status is fresh and the thread
@@ -607,14 +619,10 @@ impl SpotifyPoller {
                 // a shared reference to self.
                 spawn(Self::poller_task(self.clone(), sender));
 
-                // Create a shared reference to the receiver
-                let receiver = Arc::new(Mutex::new(receiver));
-                // change the poller_status to working
-                // and hold a reference to the receiver inside.
-                *poller_status = PollerStatus::Working(receiver.clone());
+                *poller_status = PollerStatus::Working(receiver.resubscribe());
                 // and return a shared reference
                 // to the receiver.
-                Ok(receiver.clone())
+                Ok(receiver.resubscribe())
             },
 
             // If the poller status was already working
@@ -622,7 +630,7 @@ impl SpotifyPoller {
             // to the receiver created when
             // the thread was instantiated
             // for the first time.
-            PollerStatus::Working(receiver) => Ok(receiver.clone())
+            PollerStatus::Working(receiver) => Ok(receiver.resubscribe())
         }
     }
 }
@@ -703,6 +711,15 @@ impl SpotifySong {
             })
         }
 
+        let c_played_secs = (current.timestamp().played_time() / 1000) as i32;
+        let o_played_secs = (other.timestamp().played_time() / 1000) as i32;
+        let valid_range = (POLLING_RATE_SECS - 1)..(POLLING_RATE_SECS + 1);
+
+        if (other.is_playing() && !in_range(&(o_played_secs - c_played_secs), valid_range))
+        || (!other.is_playing() && o_played_secs != c_played_secs) {
+            return Some(SpotifyEvent::TimstampChanged(current.timestamp()))
+        }
+
         // If no condition from above
         // matches it means no event
         // should be sent.
@@ -725,6 +742,8 @@ impl Serialize for SpotifyEvent {
             Self::SongPaused(timestamp) => ss!("SongPaused", timestamp),
 
             Self::SongUnpaused(timestamp) => ss!("SongUnpaused", timestamp),
+
+            Self::TimstampChanged(timestamp) => ss!("TimestampChanged", timestamp),
 
             Self::NewSong(song) => ss!("NewSong", song),
 

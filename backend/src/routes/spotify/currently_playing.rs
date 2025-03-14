@@ -28,7 +28,7 @@ async fn currently_playing(req: HttpRequest, stream: Payload, poller: Data<Spoti
     // If the receiver couldn't be obtained due
     // to the poller internal status, a NotAcceptable
     // http status code will be sent instead.
-    let receiver = poller
+    let mut receiver = poller
         .clone()
         .get_receiver()
         .await
@@ -36,12 +36,12 @@ async fn currently_playing(req: HttpRequest, stream: Payload, poller: Data<Spoti
 
     spawn(async move {
         loop {
-            // We lock the receiver to this thread.
-            let mut receiver = receiver.lock().await;
+            // we actually resubscribe in here
+            let event = receiver.recv().await;
 
             // We rather have the event not sent
             // than the whole backend being down.
-            if let Ok(event) = receiver.recv().await {
+            if let Ok(event) = event {
                 // We serialize the event to json
                 // with the custom implemented serializer.
                 if let Ok(event) = to_json(&event) {
@@ -54,6 +54,8 @@ async fn currently_playing(req: HttpRequest, stream: Payload, poller: Data<Spoti
                 }
             }
         }
+
+        println!("Dropped connection.");
     });
 
     Ok(res)

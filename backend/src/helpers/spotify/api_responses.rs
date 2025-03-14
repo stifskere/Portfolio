@@ -191,13 +191,13 @@ impl SpotifyArtist {
     }
 }
 
-/// This is implemented to compare
-/// artist equality, to be used
-/// in the event_from_poll method
-/// of the SpotifySong struct.
-impl PartialEq for SpotifyArtist {
-    fn eq(&self, other: &Self) -> bool {
-        self.name == other.name
+impl SongTimestamp {
+    pub fn played_time(&self) -> u32 {
+        self.played_time
+    }
+
+    pub fn total_time(&self) -> u32 {
+        self.total_time
     }
 }
 
