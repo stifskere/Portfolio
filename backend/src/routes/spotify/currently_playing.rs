@@ -8,26 +8,11 @@ use crate::helpers::spotify::poller::{SpotifyPoller, SpotifyPollerError};
 
 #[proof_route(get("/currently-playing"))]
 async fn currently_playing(req: HttpRequest, stream: Payload, poller: Data<SpotifyPoller>) -> HttpResult<SpotifyPollerError> {
-    // Declare the websocket handler.
-    //
-    // We don't care about the stream
-    // because we are not going
-    // to be receiving any data.
     let (res, mut session, _stream) = handle_ws(&req, stream)
         .map_err(|err| SpotifyPollerError::Ws(format!("{err:#}")))?;
 
-    // We send the relevant SpotifyEvent to the client,
-    // so when it connects it can start the syncronization
-    // instead of waiting for the next event to happen.
     session.text(to_json(&poller.sync().await)?).await.ok();
 
-    // We clone the poller shared reference
-    // that data contains and obtain
-    // the receiver.
-    //
-    // If the receiver couldn't be obtained due
-    // to the poller internal status, a NotAcceptable
-    // http status code will be sent instead.
     let mut receiver = poller
         .clone()
         .get_receiver()
@@ -36,26 +21,16 @@ async fn currently_playing(req: HttpRequest, stream: Payload, poller: Data<Spoti
 
     spawn(async move {
         loop {
-            // we actually resubscribe in here
             let event = receiver.recv().await;
 
-            // We rather have the event not sent
-            // than the whole backend being down.
             if let Ok(event) = event {
-                // We serialize the event to json
-                // with the custom implemented serializer.
                 if let Ok(event) = to_json(&event) {
-                    // If there is any error while sending
-                    // meaning that the client is not there
-                    // anymore, we simply break the loop.
                     if let Err(_) = session.text(event).await {
                         break;
                     }
                 }
             }
         }
-
-        println!("Dropped connection.");
     });
 
     Ok(res)

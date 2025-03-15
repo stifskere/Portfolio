@@ -1,60 +1,31 @@
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use serde::{Deserialize, Serialize};
 
-/// This represents a SpotifyApiError, basically
-/// a deserialization of a non 200-299 status code
-/// response from spotify.
 #[derive(Deserialize, Debug)]
 pub struct ApiSpotifyError {
-    /// Usually the error code.
     error: String,
-    /// The error description (sometimes empty string or
-    /// sometimes not even there).
+
     #[serde(rename(deserialize = "error_description"))]
     description: Option<String>
 }
 
-/// This struct is part of the Spotify api response
-/// it contains the URLS for the social media platforms
-/// we actually want, it's separated in a struct for
-/// deserialization purposes.
 #[derive(Deserialize, Serialize, Debug)]
 pub struct ApiSpotifyExternalUrls {
     spotify: Option<String>
 }
 
-/// This structure describes a spotify song author,
-/// commonly refered as "artist" by the Spotify
-/// api itself. This is directly returned by the
-/// Spotify api.
 #[derive(Deserialize, Debug)]
 pub struct ApiSpotifyArtist {
-    /// This are the URLS this artist linked
-    /// to their Spotify profile.
-    #[serde(rename(deserialize = "external_urls"))]
-    urls: ApiSpotifyExternalUrls,
-    /// This is the artist profile name
-    /// from Spotify directly.
     name: String,
+    #[serde(rename(deserialize = "external_urls"))]
+    urls: ApiSpotifyExternalUrls
 }
 
-/// This structure describes an image, in this
-/// case it's used for the song thumbnail,
-/// this data is returned directly from the
-/// Spotify api.
-///
-/// In this case the height and width are used
-/// to get the bigger one, as Spotify returns
-/// us a list of thumbnails for different sizes.
 #[derive(Deserialize, Debug)]
 pub struct ApiSpotifySongImage {
-    /// This is used for the height
-    /// of the thumbnail.
     height: u16,
-    /// This is used for the width
-    /// of the thumbmail.
     width: u16,
-    /// This is the thumbnail URL directly.
+
     url: String
 }
 
@@ -80,12 +51,6 @@ pub struct ApiSpotifySongItem {
     total_time: u32
 }
 
-/// This structure describes a spotify song from a
-/// "currenly playing" query, some of the names
-/// being changed for sake of readability.
-///
-/// The inside fields are not documented, because
-/// they are raw spotify data in all cases.
 #[derive(Deserialize, Debug)]
 pub struct ApiSpotifySong {
     item: ApiSpotifySongItem,
@@ -97,21 +62,9 @@ pub struct ApiSpotifySong {
     played_time: u32,
 }
 
-/// This represents a song timestamp,
-/// it's meant to indicate how much time
-/// from a song has played and the total
-/// song time, this way the front end
-/// can make syncronize a progress bar
-/// for the current song.
 #[derive(Clone, Copy, Serialize, Debug)]
 pub struct SongTimestamp {
-    /// How much time has played
-    /// from the current song.
     played_time: u32,
-
-    /// How much time is left
-    /// for the current song
-    /// to finish.
     total_time: u32
 }
 
