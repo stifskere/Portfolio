@@ -1,7 +1,5 @@
 use std::ops::Range;
 
-pub fn in_range<T>(value: &T, range: Range<T>) -> bool
-    where for<'a> &'a T: PartialOrd
-{
-    value >= &range.start && value <= &range.end
+pub fn in_range<T: PartialOrd>(value: T, range: Range<T>) -> bool {
+    value >= range.start && value <= range.end
 }

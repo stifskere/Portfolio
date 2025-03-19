@@ -1,5 +1,6 @@
 use std::time::{Duration, SystemTimeError};
 use std::sync::Arc;
+use std::env::var;
 use actix_error_proc::ActixError;
 use base64::prelude::BASE64_URL_SAFE;
 use base64::Engine;
@@ -16,7 +17,6 @@ use reqwest::{Client as HttpClient, Error as ReqwestError, StatusCode};
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use serde_json::Error as JsonError;
 use super::api_responses::{ApiSpotifyError, ApiSpotifySong, SongTimestamp, SpotifySong};
-
 
 const POLLING_RATE_SECS: i32 = 5;
 
@@ -39,7 +39,10 @@ pub enum SpotifyPollerError {
 
     #[error("An error occurred while subscribing to the poller: {0}")]
     #[http_status(NotAcceptable)]
-    Subscription(String)
+    Subscription(String),
+
+    #[error("Error while obtaining environment variable.")]
+    AuthNotFound(String)
 }
 
 #[derive(Clone, Debug)]
@@ -58,11 +61,11 @@ pub enum SpotifyEvent {
 }
 
 pub struct SpotifyAuthorization {
-    pub refresh_token: String,
+    refresh_token: String,
 
-    pub client_id: String,
+    client_id: String,
 
-    pub client_secret: String
+    client_secret: String
 }
 
 #[derive(Debug)]
@@ -254,6 +257,23 @@ impl SpotifyPoller {
     }
 }
 
+impl SpotifyAuthorization {
+    pub fn from_env(prefix: &str) -> Result<Self, SpotifyPollerError> {
+        macro_rules! penv {
+            ($str:literal) => {
+                var(format!("{}{}", prefix, $str))
+                    .map_err(|_| SpotifyPollerError::AuthNotFound($str.into()))
+            };
+        }
+
+        Ok(Self {
+            client_id: penv!("CLIENT_ID")?,
+            refresh_token: penv!("REFRESH_TOKEN")?,
+            client_secret: penv!("CLIENT_SECRET")?
+        })
+    }
+}
+
 impl SpotifySong {
     pub fn event_from_poll(current: Option<Arc<Self>>, other: Option<Arc<Self>>) -> Option<SpotifyEvent> {
         if current.is_none() && other.is_none() {
@@ -291,13 +311,13 @@ impl SpotifySong {
             })
         }
 
-        let c_played_secs = (current.timestamp().played_time() / 1000) as i32;
-        let o_played_secs = (other.timestamp().played_time() / 1000) as i32;
+        let c_played_secs = current.timestamp().played_seconds() as i32;
+        let o_played_secs = other.timestamp().played_seconds() as i32;
         let valid_range = (POLLING_RATE_SECS - 1)..(POLLING_RATE_SECS + 1);
 
-        if (other.is_playing() && !in_range(&(o_played_secs - c_played_secs), valid_range))
+        if (other.is_playing() && !in_range(o_played_secs - c_played_secs, valid_range))
         || (!other.is_playing() && o_played_secs != c_played_secs) {
-            return Some(SpotifyEvent::TimstampChanged(current.timestamp()))
+            return Some(SpotifyEvent::TimstampChanged(other.timestamp()))
         }
 
         None

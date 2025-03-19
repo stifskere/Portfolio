@@ -64,8 +64,8 @@ pub struct ApiSpotifySong {
 
 #[derive(Clone, Copy, Serialize, Debug)]
 pub struct SongTimestamp {
-    played_time: u32,
-    total_time: u32
+    played_milliseconds: u32,
+    total_milliseconds: u32
 }
 
 #[derive(Serialize, Debug)]
@@ -120,8 +120,8 @@ impl Into<SpotifySong> for ApiSpotifySong {
                 .collect(),
             is_playing: self.is_playing,
             timestamp: SongTimestamp {
-                played_time: self.played_time,
-                total_time: self.item.total_time
+                played_milliseconds: self.played_time,
+                total_milliseconds: self.item.total_time
             },
             song_url: self.item.urls.spotify,
             thumbnail_url: self.item.album.images
@@ -145,12 +145,24 @@ impl SpotifyArtist {
 }
 
 impl SongTimestamp {
-    pub fn played_time(&self) -> u32 {
-        self.played_time
+    #[allow(unused)]
+    pub fn played_seconds(&self) -> u32 {
+        self.played_milliseconds / 1000
     }
 
-    pub fn total_time(&self) -> u32 {
-        self.total_time
+    #[allow(unused)]
+    pub fn total_seconds(&self) -> u32 {
+        self.total_milliseconds / 1000
+    }
+
+    #[allow(unused)]
+    pub fn played_milliseconds(&self) -> u32 {
+        self.played_milliseconds
+    }
+
+    #[allow(unused)]
+    pub fn total_milliseconds(&self) -> u32 {
+        self.total_milliseconds
     }
 }
 
