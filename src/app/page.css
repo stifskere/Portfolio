@@ -39,6 +39,26 @@ section, footer {
     font-size: 35px;
 }
 
+/* checkout cv button */
+.checkout-cv {
+	position: fixed;
+	
+	height: 70px;
+	width: 200px;
+
+	top: calc(100% - 100px);
+	left: calc(100% - 250px);
+
+	@media (orientation: portrait) {
+		height: 70px;
+		width: 90%;
+
+		top: calc(5%);
+		left: calc(5%);
+	}
+
+	z-index: 100;
+}
 
 /*title section*/
 .title {

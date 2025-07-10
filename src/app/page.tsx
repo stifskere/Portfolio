@@ -16,6 +16,7 @@ import Gist from "@/components/gist";
 import Loader from "@/components/content-loader";
 import SpotifyStatus from "@/components/spotify-status";
 import GithubRating from "@/components/github-rating";
+import CvCheckout from "@/components/cv-checkout/index";
 
 import logo from "../../public/logo.png";
 
@@ -110,6 +111,9 @@ export default function Home(): ReactElement {
 	}
 
 	return <main>
+		<div id="checkout-cv" className="checkout-cv">
+			<CvCheckout container_id="portfolio-links" />
+		</div>
 		<audio id="pixel-audio" hidden>
 			<source src="/explosion.mp3" type="audio/mp3"/>
 		</audio>
@@ -151,9 +155,9 @@ export default function Home(): ReactElement {
 							<p>Get in touch:</p>
 							<div className="presentation-socials">
 								<Social
-									href="https://discord.gg/4ng5HgmaMg"
+									href="https://discord.gg/AJWFyps23a"
 									icon={<FaDiscord/>}
-									name="RustLangEs"
+									name="Flaky"
 								/>
 								<Social
 									href="https://wa.me/34611080006?text=Hello%20I'd%20like%20to%20collaborate."
@@ -214,7 +218,7 @@ export default function Home(): ReactElement {
 				<Image unoptimized src={logo} alt="logo"/>
 				<div>
 					<FooterContact />
-					<FooterList title="About this">
+					<FooterList title="About this" id="portfolio-links">
 						{[
 							{
 								content: "Page source",
@@ -237,8 +241,8 @@ export default function Home(): ReactElement {
 								href: "https://www.nuget.org/packages/MemwLib"
 							},
 							{
-								content: "Coming soon...",
-								href: "https://discord.gg/vzgbCJBKHa",
+								content: "FlakySL",
+								href: "https://discord.gg/AJWFyps23a",
 								disabled: true
 							}
 						]}
