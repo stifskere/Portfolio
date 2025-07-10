@@ -15,7 +15,7 @@ export default function CvCheckout({container_id}: CvCheckoutProps): ReactElemen
 
 	return <>
 		<Box onClick={redirect} className="cv-checkout-button">
-			<b>I'm available for hire</b>
+			<b>I&apos;m available for hire</b>
 			<span>Check out my CV</span>
 		</Box>
 	</>;
