@@ -41,7 +41,7 @@ pub enum SpotifyPollerError {
     #[http_status(NotAcceptable)]
     Subscription(String),
 
-    #[error("Error while obtaining environment variable.")]
+    #[error("Error while obtaining environment variable for '{0}'.")]
     AuthNotFound(String)
 }
 

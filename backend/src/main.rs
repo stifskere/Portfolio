@@ -1,6 +1,7 @@
 use actix_web::{main, App, HttpServer};
 use actix_web::web::Data;
 use dotenvy::dotenv;
+use helpers::github::client::{GithubClient, GithubClientError};
 use helpers::spotify::poller::{SpotifyAuthorization, SpotifyPoller, SpotifyPollerError};
 use routes::spotify::spotify_scope;
 use thiserror::Error;
@@ -15,7 +16,10 @@ enum ApplicationError {
     Io(#[from] IoError),
 
     #[error("Spotify error: {0:#}")]
-    Spotify(#[from] SpotifyPollerError)
+    Spotify(#[from] SpotifyPollerError),
+
+    #[error("Github error: {0:#}")]
+    Github(#[from] GithubClientError)
 }
 
 #[main]
@@ -28,9 +32,14 @@ async fn main() -> Result<(), ApplicationError> {
         )
     );
 
+    let github_client = Data::new(
+        GithubClient::from_env("GITHUB_")?
+    );
+
     HttpServer::new(move || {
         App::new()
             .app_data(Data::clone(&spotify_poller))
+            .app_data(Data::clone(&github_client))
             .service(spotify_scope())
     })
         .bind(("127.0.0.1", 3001))?
