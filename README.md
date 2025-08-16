@@ -1,6 +1,11 @@
 
 # Portfolio
 
+> [!warning]
+> This project is **deprecated**, this was a learning experience as my second portfolio and let me learn next.js and related technologies, the end server for which the CD pointed to has refactored and such infrastructure is not supported anymore. `https://memw.es` does no longer point to what's in this repository.
+> 
+> Keep an eye on my profile for further endeavours, as I now discovered that rust and ecosystem is the language I want to pursue.
+
 This portfolio is made with `NextJs` the main idea for this portfolio was because I saw a topographic-like design for my mouse pad, and I decided to make my portfolio around it.
 
 ![img.png](https://d3fa68hw0m2vcc.cloudfront.net/631/309238823.jpeg)
